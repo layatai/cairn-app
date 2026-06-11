@@ -61,7 +61,6 @@
     overflow: hidden;
     border-radius: 14px;
     z-index: 1;
-    will-change: transform;
   }
   /* scroll affordance */
   .scroll-hint {
@@ -468,8 +467,8 @@
     const vw = window.innerWidth, vh = window.innerHeight;
     let Z = vw / w;
     if (fitHeight) Z = Math.min(Z, vh / 720);
-    const X = vw / 2 - Z * cx;
-    const Y = vh / 2 - Z * cy;
+    const X = Math.round(vw / 2 - Z * cx);
+    const Y = Math.round(vh / 2 - Z * cy);
     stage.style.transform = `translate(${X}px, ${Y}px) scale(${Z})`;
   }
   const FULL = { cx: 640, cy: 360, w: 1280 };
