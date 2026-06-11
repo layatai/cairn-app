@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>gitui — a fast, native Git client with AI code review</title>
+<meta name="description" content="gitui is a fast, native Git client with AI code review and your editor's run configs built in. Free for macOS, Windows, and Linux." />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="gitui — a fast, native Git client" />
+<meta property="og:description" content="AI code review, run configs, and a full Git workflow — native speed, free." />
+<meta property="og:image" content="https://layatai.github.io/gitui-app/screenshot.png" />
+<meta property="og:url" content="https://layatai.github.io/gitui-app/" />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235fd08a' stroke-width='2.4'%3E%3Ccircle cx='6' cy='6' r='2.4'/%3E%3Ccircle cx='6' cy='18' r='2.4'/%3E%3Ccircle cx='18' cy='12' r='2.4'/%3E%3Cpath d='M6 8.4v7.2M8.4 18H12a4 4 0 0 0 4-4'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #1b1c18;
+    --surface: #232420;
+    --surface-2: #2a2b25;
+    --surface-3: #313229;
+    --border: #3a3b33;
+    --border-strong: #4b4c42;
+    --ink: #e9ecdd;
+    --ink-2: #b8bdab;
+    --ink-3: #8d917f;
+    --accent: #5fd08a;
+    --accent-ink: #a7e6c2;
+    --accent-bg: #1f3a2b;
+    --amber: #d7a25a;
+    --rose: #e08a6f;
+    --blue: #62a8f0;
+    --purple: #b083d6;
+    --cyan: #5bb8c9;
+    --ct-feat: #5ec98a; --ct-fix: #d7a25a; --ct-refactor: #62a8f0; --ct-docs: #5bb8c9; --ct-chore: #a3adba;
+    --font-ui: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    background: #0c0d0b;
+    color: var(--ink);
+    font-family: var(--font-ui);
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+  }
+
+  /* 16:9 stage, scales to the viewport */
+  .stage {
+    position: relative;
+    width: 1280px;
+    height: 720px;
+    transform: scale(var(--scale, 1));
+    transform-origin: center;
+    background: radial-gradient(120% 120% at 50% -10%, #18241d 0%, #0c0d0b 60%);
+    overflow: hidden;
+    border-radius: 14px;
+  }
+
+  /* ---------- intro / outro overlays ---------- */
+  .overlay {
+    position: absolute; inset: 0; z-index: 40;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; gap: 18px;
+    background: radial-gradient(120% 120% at 50% 30%, #16241c 0%, #0b0c0a 70%);
+    transition: opacity .8s ease, transform .8s ease;
+  }
+  .overlay.hide { opacity: 0; transform: scale(1.04); pointer-events: none; }
+  .logo {
+    width: 84px; height: 84px; border-radius: 22px;
+    background: linear-gradient(150deg, var(--accent), #2f8f5e);
+    display: grid; place-items: center;
+    box-shadow: 0 18px 60px -16px rgba(95,208,138,.6);
+    animation: pop .9s cubic-bezier(.2,.9,.2,1.1) both;
+  }
+  .logo svg { width: 46px; height: 46px; }
+  .wordmark { font-size: 64px; font-weight: 700; letter-spacing: -2px; }
+  .wordmark b { color: var(--accent); }
+  .tagline { font-size: 24px; color: var(--ink-2); font-weight: 500; max-width: 720px; line-height: 1.35; }
+  .tagline .hl { color: var(--ink); }
+  .kicker { font-family: var(--font-mono); font-size: 13px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); }
+
+  .cta-row { display: flex; gap: 14px; margin-top: 8px; }
+  .pill { display: inline-flex; align-items: center; gap: 9px; padding: 13px 22px; border-radius: 12px; font-weight: 600; font-size: 17px; }
+  .pill.primary { background: var(--accent); color: #0c1f14; }
+  .pill.ghost { border: 1px solid var(--border-strong); color: var(--ink); }
+  .url { font-family: var(--font-mono); color: var(--ink-3); font-size: 15px; margin-top: 6px; }
+
+  /* ---------- the app window mock ---------- */
+  .app {
+    position: absolute; inset: 46px 52px 52px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 40px 120px -30px rgba(0,0,0,.8);
+    display: grid;
+    grid-template-rows: 34px 38px 1fr 120px;
+    overflow: hidden;
+    opacity: 0; transform: translateY(24px) scale(.98);
+    transition: opacity .9s ease, transform .9s cubic-bezier(.2,.8,.2,1);
+  }
+  .app.show { opacity: 1; transform: none; }
+
+  .titlebar { display: flex; align-items: center; gap: 8px; padding: 0 13px; background: var(--surface); border-bottom: 1px solid var(--border); }
+  .dot { width: 12px; height: 12px; border-radius: 50%; }
+  .dot.r { background: #ec6a5f; } .dot.y { background: #f4bf4f; } .dot.g { background: #61c554; }
+  .titlebar .t { margin-left: auto; margin-right: auto; font-size: 12px; color: var(--ink-3); font-weight: 500; }
+
+  .toolbar { display: flex; align-items: center; gap: 7px; padding: 0 10px; background: var(--surface); border-bottom: 1px solid var(--border); font-size: 12px; }
+  .tb { display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 9px; border: 1px solid var(--border); border-radius: 7px; color: var(--ink-2); background: var(--surface-2); }
+  .tb .ic { width: 13px; height: 13px; color: var(--ink-3); }
+  .tb.branch { color: var(--blue); border-color: transparent; background: transparent; font-weight: 600; }
+  .sep { width: 1px; height: 18px; background: var(--border); margin: 0 2px; }
+  .split { display: inline-flex; }
+  .split .main { border-top-right-radius: 0; border-bottom-right-radius: 0; border-right: none; }
+  .split .car { border-top-left-radius: 0; border-bottom-left-radius: 0; padding: 0 5px; }
+  .tb.run .ic, .tb.run { color: var(--accent); }
+  .spacer { flex: 1; }
+
+  .body { display: grid; grid-template-columns: 184px 1fr 300px; overflow: hidden; }
+  .pane { overflow: hidden; }
+  .sidebar { border-right: 1px solid var(--border); background: var(--surface); padding: 10px 8px; }
+  .sb-h { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--ink-3); margin: 8px 6px 6px; font-weight: 600; }
+  .sb-i { display: flex; align-items: center; gap: 7px; padding: 5px 8px; border-radius: 6px; font-size: 12.5px; color: var(--ink-2); }
+  .sb-i.active { background: var(--accent-bg); color: var(--accent-ink); }
+  .sb-i .br { width: 12px; height: 12px; color: var(--ink-3); }
+  .sb-i.active .br { color: var(--accent); }
+
+  /* commit graph */
+  .center { display: grid; grid-template-rows: 1fr 150px; min-width: 0; }
+  .graph { overflow: hidden; position: relative; }
+  .grow { display: grid; grid-template-columns: 86px 1fr auto; align-items: center; gap: 0; height: 30px; padding: 0 12px 0 0; font-size: 12.5px; border-bottom: 1px solid color-mix(in srgb, var(--border) 40%, transparent); }
+  .grow:hover { background: var(--surface-2); }
+  .lanes { position: relative; height: 30px; }
+  .lanes svg { position: absolute; inset: 0; }
+  .msg { display: flex; align-items: center; gap: 8px; min-width: 0; }
+  .ct { font-family: var(--font-mono); font-weight: 600; }
+  .msg .tx { color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .badge { font-family: var(--font-mono); font-size: 10.5px; padding: 1px 6px; border-radius: 5px; border: 1px solid; }
+  .badge.head { background: #1f6feb; border-color: #4ea1ff; color: #fff; }
+  .badge.local { color: #8bc6a3; border-color: #2f4a3a; background: #16241c; }
+  .badge.remote { color: #c0a26a; border-color: #463a24; background: #241f16; }
+  .meta { color: var(--ink-3); font-size: 11px; margin-left: 12px; }
+
+  /* diff */
+  .diff { border-top: 1px solid var(--border); background: var(--bg); overflow: hidden; font-family: var(--font-mono); font-size: 11.5px; }
+  .diff-h { display: flex; align-items: center; gap: 8px; padding: 6px 12px; background: var(--surface); border-bottom: 1px solid var(--border); color: var(--ink-2); font-family: var(--font-ui); font-size: 11.5px; }
+  .dl { display: grid; grid-template-columns: 38px 38px 14px 1fr; height: 19px; align-items: center; }
+  .ln { text-align: right; padding-right: 8px; color: #6b6f60; }
+  .ln.clk { color: var(--accent); cursor: pointer; }
+  .dl.add { background: rgba(94,201,138,.10); }
+  .dl.del { background: rgba(224,138,111,.10); }
+  .dl.add .sg { color: var(--ct-feat); } .dl.del .sg { color: var(--rose); }
+  .sg { text-align: center; }
+  .ct-x { color: var(--ink); white-space: pre; }
+  .ct-x .g { color: var(--ct-feat); } .ct-x .r { color: var(--rose); }
+
+  /* right pane (review) */
+  .right { border-left: 1px solid var(--border); background: var(--surface); display: grid; grid-template-rows: 32px 1fr; }
+  .rtabs { display: flex; gap: 2px; padding: 0 8px; border-bottom: 1px solid var(--border); align-items: end; }
+  .rtab { padding: 8px 10px 7px; font-size: 11.5px; color: var(--ink-3); border-bottom: 2px solid transparent; }
+  .rtab.active { color: var(--ink); border-bottom-color: var(--accent); }
+  .review { padding: 10px; overflow: hidden; font-size: 12px; }
+  .verdict { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; padding: 3px 9px; border-radius: 999px; background: #3a1d1d; color: #ffb4ac; margin-bottom: 9px; }
+  .finding { background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; padding: 8px 9px; margin-bottom: 7px; }
+  .finding .top { display: flex; align-items: center; gap: 7px; margin-bottom: 4px; }
+  .pri { font-family: var(--font-mono); font-size: 9.5px; padding: 1px 5px; border-radius: 4px; }
+  .pri.p0 { background: #3a1d1d; color: #ffb4ac; } .pri.p1 { background: #2a2417; color: var(--amber); }
+  .finding .ti { font-weight: 600; font-size: 11.5px; }
+  .finding .bd { color: var(--ink-2); font-size: 11px; line-height: 1.4; }
+  .finding .act { margin-top: 6px; }
+  .fix { display: inline-flex; align-items: center; gap: 5px; font-size: 10.5px; padding: 3px 8px; border-radius: 6px; background: var(--accent); color: #0c1f14; font-weight: 600; }
+  .composer { margin-top: 8px; border: 1px solid var(--border); border-radius: 9px; background: var(--surface-2); padding: 8px; }
+  .composer .row { display: flex; align-items: center; gap: 6px; margin-top: 7px; font-size: 10.5px; color: var(--ink-3); }
+  .chip { padding: 3px 8px; border: 1px solid var(--border); border-radius: 6px; }
+  .send { margin-left: auto; width: 22px; height: 22px; border-radius: 6px; background: var(--accent); display: grid; place-items: center; }
+
+  /* terminal */
+  .term { border-top: 1px solid var(--border); background: #14150f; font-family: var(--font-mono); font-size: 11.5px; padding: 9px 12px; color: #cdd4c2; overflow: hidden; }
+  .term .tt { color: var(--ink-3); font-size: 10.5px; margin-bottom: 5px; }
+  .term .p { color: var(--accent); }
+  .term .ok { color: var(--ct-feat); }
+  .term .dim { color: var(--ink-3); }
+  .cursor { display: inline-block; width: 7px; height: 13px; background: var(--accent); vertical-align: -2px; animation: blink 1s steps(1) infinite; }
+
+  /* ---------- caption + spotlight ---------- */
+  .caption {
+    position: absolute; left: 52px; bottom: 64px; z-index: 30;
+    max-width: 560px;
+    background: rgba(16,17,13,.86);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--border-strong);
+    border-radius: 14px;
+    padding: 16px 20px;
+    opacity: 0; transform: translateY(14px);
+    transition: opacity .5s ease, transform .5s cubic-bezier(.2,.8,.2,1);
+  }
+  .caption.show { opacity: 1; transform: none; }
+  .caption .ck { font-family: var(--font-mono); font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
+  .caption .ch { font-size: 23px; font-weight: 700; letter-spacing: -.5px; line-height: 1.2; }
+  .caption .cs { font-size: 14.5px; color: var(--ink-2); margin-top: 6px; line-height: 1.4; }
+
+  .spotlight {
+    position: absolute; z-index: 25; border-radius: 10px;
+    border: 2px solid var(--accent);
+    box-shadow: 0 0 0 9999px rgba(8,9,7,.52), 0 8px 30px -6px rgba(95,208,138,.5);
+    opacity: 0; transition: all .55s cubic-bezier(.3,.8,.2,1);
+  }
+  .spotlight.show { opacity: 1; }
+
+  /* progress bar */
+  .progress { position: absolute; left: 0; bottom: 0; height: 3px; background: var(--accent); width: 0; z-index: 50; box-shadow: 0 0 12px var(--accent); }
+
+  .replay { position: absolute; right: 18px; bottom: 16px; z-index: 60; display: inline-flex; align-items: center; gap: 7px; font-size: 13px; color: var(--ink-2); background: rgba(16,17,13,.8); border: 1px solid var(--border-strong); padding: 8px 13px; border-radius: 10px; cursor: pointer; opacity: 0; transition: opacity .4s; }
+  .replay.show { opacity: 1; }
+
+  /* ---- landing nav (persistent download CTA) ---- */
+  .site-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 15px 24px; pointer-events: none; }
+  .site-nav a { pointer-events: auto; text-decoration: none; }
+  .brand { font-size: 21px; font-weight: 700; color: var(--ink); letter-spacing: -.5px; display: inline-flex; align-items: center; gap: 9px; }
+  .brand b { color: var(--accent); }
+  .brand .mk { width: 26px; height: 26px; border-radius: 8px; background: linear-gradient(150deg, var(--accent), #2f8f5e); display: grid; place-items: center; }
+  .brand .mk svg { width: 15px; height: 15px; }
+  .nav-actions { display: flex; align-items: center; gap: 16px; }
+  .nav-link { color: var(--ink-2); font-size: 14px; font-weight: 500; }
+  .nav-link:hover { color: var(--ink); }
+  .nav-dl { display: inline-flex; align-items: center; gap: 7px; background: var(--accent); color: #0c1f14; font-weight: 600; font-size: 14px; padding: 9px 17px; border-radius: 10px; box-shadow: 0 8px 24px -8px rgba(95,208,138,.5); }
+  .nav-dl:hover { filter: brightness(1.06); }
+  a.pill { text-decoration: none; cursor: pointer; }
+  a.pill.primary:hover { filter: brightness(1.06); }
+
+  @keyframes pop { from { transform: scale(.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  @keyframes blink { 50% { opacity: 0; } }
+  .fade-up { animation: fadeUp .7s ease both; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+</style>
+</head>
+<body>
+<nav class="site-nav">
+  <a class="brand" href="https://github.com/layatai/gitui" target="_blank" rel="noopener">
+    <span class="mk"><svg viewBox="0 0 24 24" fill="none" stroke="#0c1f14" stroke-width="2.4"><circle cx="6" cy="6" r="2.4"/><circle cx="6" cy="18" r="2.4"/><circle cx="18" cy="12" r="2.4"/><path d="M6 8.4v7.2M8.4 18H12a4 4 0 0 0 4-4"/></svg></span>
+    git<b>ui</b>
+  </a>
+  <div class="nav-actions">
+    <a class="nav-link" href="https://github.com/layatai/gitui" target="_blank" rel="noopener">GitHub</a>
+    <a class="nav-dl" id="navDl" data-dl="auto" href="https://github.com/layatai/gitui-app/releases/latest" target="_blank" rel="noopener">↓ Download</a>
+  </div>
+</nav>
+<div class="stage" id="stage">
+
+  <!-- ===== the gitui window ===== -->
+  <div class="app" id="app">
+    <div class="titlebar">
+      <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+      <span class="t">gitui — layatai/gitui</span>
+    </div>
+
+    <!-- toolbar -->
+    <div class="toolbar" id="toolbar">
+      <span class="tb"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7h18M3 12h18M3 17h18"/></svg> Repository</span>
+      <span class="sep"></span>
+      <span class="tb branch">⎇ main</span>
+      <span class="sep"></span>
+      <span class="tb">↓ Fetch</span>
+      <span class="tb">⤓ Pull</span>
+      <span class="tb">⤒ Push</span>
+      <span class="spacer"></span>
+      <span class="split" id="tb-open"><span class="tb main">&lt;/&gt; Cursor</span><span class="tb car">▾</span></span>
+      <span class="split" id="tb-run"><span class="tb run main">▶ Run dev</span><span class="tb run car">▾</span></span>
+    </div>
+
+    <!-- body -->
+    <div class="body">
+      <!-- sidebar -->
+      <div class="pane sidebar">
+        <div class="sb-h">Branches</div>
+        <div class="sb-i active"><svg class="br" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><path d="M6 8v8M18 6a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM18 10c0 4-6 2-6 8"/></svg> main</div>
+        <div class="sb-i"><svg class="br" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><path d="M6 8v8"/></svg> feat/run-configs</div>
+        <div class="sb-i"><svg class="br" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><path d="M6 8v8"/></svg> feat/ai-review</div>
+        <div class="sb-h">Remotes</div>
+        <div class="sb-i"><svg class="br" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12a8 8 0 1 0 16 0 8 8 0 0 0-16 0zM4 12h16"/></svg> origin/main</div>
+        <div class="sb-h">Tags</div>
+        <div class="sb-i"><svg class="br" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7l9-4 9 4-9 4-9-4z"/></svg> v0.5.0</div>
+      </div>
+
+      <!-- center: graph + diff -->
+      <div class="pane center" id="center">
+        <div class="graph">
+          <!-- rows -->
+          <div class="grow">
+            <div class="lanes"><svg viewBox="0 0 86 30"><line x1="14" y1="-2" x2="14" y2="32" stroke="#5ec98a" stroke-width="2"/><circle cx="14" cy="15" r="5" fill="#1b1c18" stroke="#5ec98a" stroke-width="2.5"/></svg></div>
+            <div class="msg"><span class="badge head">HEAD → main</span><span class="ct" style="color:var(--ct-feat)">feat:</span><span class="tx">Run VS Code configs & npm scripts from a Run button</span></div>
+            <span class="meta">now</span>
+          </div>
+          <div class="grow">
+            <div class="lanes"><svg viewBox="0 0 86 30"><line x1="14" y1="-2" x2="14" y2="32" stroke="#5ec98a" stroke-width="2"/><line x1="34" y1="32" x2="14" y2="15" stroke="#62a8f0" stroke-width="2"/><circle cx="14" cy="15" r="5" fill="#1b1c18" stroke="#5ec98a" stroke-width="2.5"/></svg></div>
+            <div class="msg"><span class="ct" style="color:var(--ct-feat)">feat:</span><span class="tx">AI code review as an agent-chat panel</span></div>
+            <span class="meta">2h</span>
+          </div>
+          <div class="grow">
+            <div class="lanes"><svg viewBox="0 0 86 30"><line x1="14" y1="-2" x2="14" y2="32" stroke="#5ec98a" stroke-width="2"/><line x1="34" y1="-2" x2="34" y2="32" stroke="#62a8f0" stroke-width="2"/><circle cx="34" cy="15" r="5" fill="#1b1c18" stroke="#62a8f0" stroke-width="2.5"/></svg></div>
+            <div class="msg"><span class="badge remote">origin</span><span class="ct" style="color:var(--ct-refactor)">refactor:</span><span class="tx">Resize via direct DOM — no per-frame re-render</span></div>
+            <span class="meta">5h</span>
+          </div>
+          <div class="grow">
+            <div class="lanes"><svg viewBox="0 0 86 30"><line x1="14" y1="-2" x2="14" y2="32" stroke="#5ec98a" stroke-width="2"/><line x1="34" y1="-2" x2="34" y2="15" stroke="#62a8f0" stroke-width="2"/><line x1="14" y1="15" x2="34" y2="15" stroke="#62a8f0" stroke-width="2"/><circle cx="14" cy="15" r="5" fill="#1b1c18" stroke="#5ec98a" stroke-width="2.5"/></svg></div>
+            <div class="msg"><span class="ct" style="color:var(--ct-fix)">fix:</span><span class="tx">Single-flight agent session so a review fires once</span></div>
+            <span class="meta">6h</span>
+          </div>
+          <div class="grow">
+            <div class="lanes"><svg viewBox="0 0 86 30"><line x1="14" y1="-2" x2="14" y2="32" stroke="#5ec98a" stroke-width="2"/><circle cx="14" cy="15" r="5" fill="#1b1c18" stroke="#5ec98a" stroke-width="2.5"/></svg></div>
+            <div class="msg"><span class="ct" style="color:var(--ct-docs)">docs:</span><span class="tx">Click a diff line to open the file at that line</span></div>
+            <span class="meta">8h</span>
+          </div>
+        </div>
+
+        <!-- diff -->
+        <div class="diff" id="diff">
+          <div class="diff-h">src/runconfig.rs</div>
+          <div class="dl"><span class="ln clk">41</span><span class="ln clk">41</span><span class="sg"> </span><span class="ct-x">fn launch_parts(c: &amp;LaunchCfg) -&gt; Result&lt;Parts&gt; {</span></div>
+          <div class="dl del"><span class="ln">42</span><span class="ln"></span><span class="sg">-</span><span class="ct-x"><span class="r">    let program = c.program.clone();</span></span></div>
+          <div class="dl add"><span class="ln"></span><span class="ln clk">42</span><span class="sg">+</span><span class="ct-x"><span class="g">    if let Some(rt) = &amp;c.runtime_executable {</span></span></div>
+          <div class="dl add"><span class="ln"></span><span class="ln clk">43</span><span class="sg">+</span><span class="ct-x"><span class="g">        return node_runtime(rt, &amp;c.runtime_args);</span></span></div>
+          <div class="dl"><span class="ln clk">44</span><span class="ln clk">44</span><span class="sg"> </span><span class="ct-x">    }</span></div>
+        </div>
+      </div>
+
+      <!-- right pane: review -->
+      <div class="pane right" id="right">
+        <div class="rtabs">
+          <span class="rtab">Details</span>
+          <span class="rtab active">Code Review</span>
+        </div>
+        <div class="review">
+          <span class="verdict">▲ 2 issues found</span>
+          <div class="finding">
+            <div class="top"><span class="pri p0">P0</span><span class="ti">Unhandled None on resolve</span></div>
+            <div class="bd">`resolve_command` can panic when the config id has no <code>:</code> separator.</div>
+            <div class="act"><span class="fix">✦ Fix with AI</span></div>
+          </div>
+          <div class="finding">
+            <div class="top"><span class="pri p1">P1</span><span class="ti">Quote env values</span></div>
+            <div class="bd">Env values aren't shell-escaped before joining the command line.</div>
+            <div class="act"><span class="fix">✦ Fix with AI</span></div>
+          </div>
+          <div class="composer">
+            <div style="color:var(--ink-3);font-size:11px">Message the agent…</div>
+            <div class="row"><span class="chip">Review working</span><span class="chip">Branch</span><span style="margin-left:auto;color:var(--ink-3)">pi ▾</span><span class="send" style="color:#0c1f14">➤</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- terminal -->
+    <div class="term" id="term">
+      <div class="tt">▌ Run: dev</div>
+      <div><span class="p">~/projects/gitui</span> <span class="dim">$</span> pnpm run dev</div>
+      <div class="dim">> vite</div>
+      <div class="ok">  VITE v6.0  ready in 412 ms</div>
+      <div>  ➜  Local:   <span style="color:var(--cyan)">http://localhost:5173/</span> <span class="cursor"></span></div>
+    </div>
+  </div>
+
+  <!-- spotlight + caption + chrome -->
+  <div class="spotlight" id="spot"></div>
+  <div class="caption" id="cap">
+    <div class="ck" id="ck"></div>
+    <div class="ch" id="ch"></div>
+    <div class="cs" id="cs"></div>
+  </div>
+  <div class="progress" id="bar"></div>
+  <div class="replay" id="replay">↻ Replay</div>
+
+  <!-- intro -->
+  <div class="overlay" id="intro">
+    <div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#0c1f14" stroke-width="2.4"><circle cx="6" cy="6" r="2.4"/><circle cx="6" cy="18" r="2.4"/><circle cx="18" cy="12" r="2.4"/><path d="M6 8.4v7.2M8.4 18H12a4 4 0 0 0 4-4"/></svg></div>
+    <div class="wordmark">git<b>ui</b></div>
+    <div class="tagline"><span class="hl">A fast, native Git client</span> — with AI code review and your editor's run configs, built in.</div>
+    <div class="kicker">macOS · Windows · Linux</div>
+  </div>
+
+  <!-- outro / CTA -->
+  <div class="overlay hide" id="outro">
+    <div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#0c1f14" stroke-width="2.4"><circle cx="6" cy="6" r="2.4"/><circle cx="6" cy="18" r="2.4"/><circle cx="18" cy="12" r="2.4"/><path d="M6 8.4v7.2M8.4 18H12a4 4 0 0 0 4-4"/></svg></div>
+    <div class="wordmark">git<b>ui</b> <span style="font-size:28px;color:var(--ink-3);font-weight:600">0.5</span></div>
+    <div class="tagline"><span class="hl">Branch, review, and run</span> — without leaving your Git client.</div>
+    <div class="cta-row">
+      <a class="pill primary" id="ctaDl" data-dl="auto" href="https://github.com/layatai/gitui-app/releases/latest" target="_blank" rel="noopener">⤓ Download — free</a>
+      <a class="pill ghost" href="https://github.com/layatai/gitui-app/releases/latest" target="_blank" rel="noopener">macOS · Windows</a>
+    </div>
+    <a class="url" href="https://github.com/layatai/gitui-app/releases/latest" target="_blank" rel="noopener" style="text-decoration:none">github.com/layatai/gitui-app/releases</a>
+  </div>
+
+</div>
+
+<script>
+  // Scale the 1280×720 stage to fit the viewport.
+  function fit() {
+    const s = Math.min(window.innerWidth / 1280, window.innerHeight / 720);
+    document.getElementById('stage').style.setProperty('--scale', s);
+  }
+  window.addEventListener('resize', fit); fit();
+
+  const $ = (id) => document.getElementById(id);
+  const spot = $('spot'), cap = $('cap');
+
+  // Spotlight rects in fixed stage (1280×720) coordinates — reliable regardless
+  // of DPR/scale. Derived from the app layout (inset 46/52, rows 34/38/1fr/120,
+  // body cols 184/1fr/300).
+  const RECT = {
+    center: { x: 230, y: 114, w: 702, h: 438 }, // graph + diff
+    right:  { x: 922, y: 114, w: 312, h: 438 },  // review pane
+    run:    { x: 1123, y: 83, w: 102, h: 33 },   // Run split button
+    term:   { x: 54,  y: 550, w: 1172, h: 114 }, // terminal
+    diff:   { x: 230, y: 394, w: 702, h: 156 },  // diff viewer
+  };
+  function highlight(rect) {
+    if (!rect) { spot.classList.remove('show'); return; }
+    spot.style.left = rect.x + 'px';
+    spot.style.top = rect.y + 'px';
+    spot.style.width = rect.w + 'px';
+    spot.style.height = rect.h + 'px';
+    spot.classList.add('show');
+  }
+
+  function caption(k, h, s) {
+    cap.classList.remove('show');
+    setTimeout(() => {
+      $('ck').textContent = k; $('ch').textContent = h; $('cs').textContent = s;
+      cap.classList.add('show');
+    }, 220);
+  }
+
+  // Scene timeline. t = start ms.
+  const scenes = [
+    { t: 0,    fn: () => { /* intro visible */ } },
+    { t: 3600, fn: () => { $('intro').classList.add('hide'); $('app').classList.add('show'); } },
+    { t: 5200, fn: () => {
+        caption('The client', 'A full Git workhorse', 'Graph, branches, stash, rebase, blame, history — fast and native.');
+        highlight(RECT.center);
+      } },
+    { t: 10500, fn: () => {
+        caption('AI code review', 'Review, inline', 'Claude · Codex · Gemini · pi — structured findings you fix in one click.');
+        highlight(RECT.right);
+      } },
+    { t: 16500, fn: () => {
+        caption('Run configs', 'Run, from the toolbar', 'launch.json, tasks.json & package.json scripts — straight into the terminal.');
+        highlight(RECT.run);
+      } },
+    { t: 20000, fn: () => { highlight(RECT.term); } },
+    { t: 24000, fn: () => {
+        caption('Open in editor', 'Jump to the code', 'Click any diff line to open that file at that line in your editor.');
+        highlight(RECT.diff);
+      } },
+    { t: 29000, fn: () => { cap.classList.remove('show'); highlight(null); } },
+    { t: 30000, fn: () => { $('outro').classList.remove('hide'); } },
+    { t: 35500, fn: () => { $('replay').classList.add('show'); } },
+  ];
+  const DURATION = 35500;
+  let timers = [];
+
+  function run() {
+    timers.forEach(clearTimeout); timers = [];
+    // reset
+    $('intro').classList.remove('hide');
+    $('app').classList.remove('show');
+    $('outro').classList.add('hide');
+    $('replay').classList.remove('show');
+    cap.classList.remove('show'); highlight(null);
+    $('bar').style.transition = 'none'; $('bar').style.width = '0';
+    requestAnimationFrame(() => {
+      $('bar').style.transition = `width ${DURATION}ms linear`;
+      $('bar').style.width = '100%';
+    });
+    scenes.forEach(s => timers.push(setTimeout(s.fn, s.t)));
+  }
+  $('replay').addEventListener('click', run);
+  run();
+
+  // Wire the download links to the latest release — direct .dmg/.exe for the
+  // visitor's platform, falling back to the releases page.
+  const RELEASES = 'https://github.com/layatai/gitui-app/releases/latest';
+  const ua = navigator.userAgent;
+  const isMac = /Mac/.test(ua) || /Mac/.test(navigator.platform);
+  const isWin = /Win/.test(ua) || /Win/.test(navigator.platform);
+  fetch('https://api.github.com/repos/layatai/gitui-app/releases/latest')
+    .then((r) => (r.ok ? r.json() : null))
+    .then((rel) => {
+      if (!rel || !rel.assets) return;
+      const find = (suf) => (rel.assets.find((a) => a.name.toLowerCase().endsWith(suf)) || {}).browser_download_url;
+      const mac = find('.dmg');
+      const win = find('-setup.exe') || find('.exe') || find('.msi');
+      const auto = isMac ? mac || RELEASES : isWin ? win || RELEASES : RELEASES;
+      document.querySelectorAll('[data-dl="auto"]').forEach((a) => { a.href = auto; });
+    })
+    .catch(() => {});
+</script>
+</body>
+</html>
