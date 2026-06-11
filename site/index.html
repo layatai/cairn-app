@@ -44,22 +44,32 @@
     background: #0c0d0b;
     color: var(--ink);
     font-family: var(--font-ui);
-    display: grid;
-    place-items: center;
-    overflow: hidden;
+    overflow-x: hidden;
   }
+  /* Tall track that provides the scroll distance for the story. */
+  .scroll-track { height: 720vh; pointer-events: none; }
 
-  /* 16:9 stage, scales to the viewport */
+  /* 16:9 stage — pinned (fixed) + centered while you scroll the story. */
   .stage {
-    position: relative;
+    position: fixed;
+    left: 50%; top: 50%;
     width: 1280px;
     height: 720px;
-    transform: scale(var(--scale, 1));
-    transform-origin: center;
+    transform: translate(-50%, -50%) scale(var(--scale, 1));
     background: radial-gradient(120% 120% at 50% -10%, #18241d 0%, #0c0d0b 60%);
     overflow: hidden;
     border-radius: 14px;
+    z-index: 1;
   }
+  /* scroll affordance */
+  .scroll-hint {
+    position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%);
+    z-index: 90; display: flex; flex-direction: column; align-items: center; gap: 5px;
+    font-size: 12.5px; font-weight: 500; letter-spacing: .5px; color: var(--ink-3);
+    transition: opacity .5s ease;
+  }
+  .scroll-hint .arrow { font-size: 17px; color: var(--accent); animation: bob 1.4s ease-in-out infinite; }
+  @keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(5px); } }
 
   /* ---------- intro / outro overlays ---------- */
   .overlay {
@@ -256,7 +266,7 @@
   <div class="app" id="app">
     <div class="titlebar">
       <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
-      <span class="t">gitui — layatai/gitui</span>
+      <span class="t">gitui — my-app</span>
     </div>
 
     <!-- toolbar -->
@@ -373,7 +383,6 @@
     <div class="cs" id="cs"></div>
   </div>
   <div class="progress" id="bar"></div>
-  <div class="replay" id="replay">↻ Replay</div>
 
   <!-- intro -->
   <div class="overlay" id="intro">
@@ -396,6 +405,10 @@
   </div>
 
 </div>
+
+<!-- provides the scroll distance that drives the story -->
+<div class="scroll-track"></div>
+<div class="scroll-hint" id="hint"><span>Scroll to explore</span><span class="arrow">↓</span></div>
 
 <script>
   // Scale the 1280×720 stage to fit the viewport.
@@ -435,51 +448,39 @@
     }, 220);
   }
 
-  // Scene timeline. t = start ms.
+  // Scroll-driven story: each scene activates as scroll progress passes `at`.
   const scenes = [
-    { t: 0,    fn: () => { /* intro visible */ } },
-    { t: 3600, fn: () => { $('intro').classList.add('hide'); $('app').classList.add('show'); } },
-    { t: 5200, fn: () => {
-        caption('The client', 'A full Git workhorse', 'Graph, branches, stash, rebase, blame, history — fast and native.');
-        highlight(RECT.center);
-      } },
-    { t: 10500, fn: () => {
-        caption('AI code review', 'Review, inline', 'Claude · Codex · Gemini · pi — structured findings you fix in one click.');
-        highlight(RECT.right);
-      } },
-    { t: 16500, fn: () => {
-        caption('Run configs', 'Run, from the toolbar', 'launch.json, tasks.json & package.json scripts — straight into the terminal.');
-        highlight(RECT.run);
-      } },
-    { t: 20000, fn: () => { highlight(RECT.term); } },
-    { t: 24000, fn: () => {
-        caption('Open in editor', 'Jump to the code', 'Click any diff line to open that file at that line in your editor.');
-        highlight(RECT.diff);
-      } },
-    { t: 29000, fn: () => { cap.classList.remove('show'); highlight(null); } },
-    { t: 30000, fn: () => { $('outro').classList.remove('hide'); } },
-    { t: 35500, fn: () => { $('replay').classList.add('show'); } },
+    { at: 0.12, k: 'The client',     h: 'A full Git workhorse',  s: 'Graph, branches, stash, rebase, blame, history — fast and native.',               rect: RECT.center },
+    { at: 0.30, k: 'AI code review', h: 'Review, inline',         s: 'Claude · Codex · Gemini · pi — structured findings you fix in one click.',         rect: RECT.right },
+    { at: 0.48, k: 'Run configs',    h: 'Run, from the toolbar',  s: 'launch.json, tasks.json & package.json scripts — straight from the toolbar.',      rect: RECT.run },
+    { at: 0.62, k: 'Run configs',    h: 'Watch it run',           s: 'The command runs in an integrated terminal tab — no context switch.',             rect: RECT.term },
+    { at: 0.74, k: 'Open in editor', h: 'Jump to the code',       s: 'Click any diff line to open that file at that line in your editor.',               rect: RECT.diff },
   ];
-  const DURATION = 35500;
-  let timers = [];
-
-  function run() {
-    timers.forEach(clearTimeout); timers = [];
-    // reset
-    $('intro').classList.remove('hide');
-    $('app').classList.remove('show');
-    $('outro').classList.add('hide');
-    $('replay').classList.remove('show');
-    cap.classList.remove('show'); highlight(null);
-    $('bar').style.transition = 'none'; $('bar').style.width = '0';
-    requestAnimationFrame(() => {
-      $('bar').style.transition = `width ${DURATION}ms linear`;
-      $('bar').style.width = '100%';
-    });
-    scenes.forEach(s => timers.push(setTimeout(s.fn, s.t)));
+  let current = -99;
+  function setScene(i) {
+    if (i === current) return;
+    current = i;
+    if (i < 0) { cap.classList.remove('show'); highlight(null); return; }
+    caption(scenes[i].k, scenes[i].h, scenes[i].s);
+    highlight(scenes[i].rect);
   }
-  $('replay').addEventListener('click', run);
-  run();
+
+  function onScroll() {
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const p = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+    $('bar').style.width = (p * 100) + '%';
+    $('app').classList.toggle('show', p > 0.06);
+    $('intro').classList.toggle('hide', p > 0.09);
+    $('outro').classList.toggle('hide', p < 0.90);
+    $('hint').style.opacity = p > 0.03 ? '0' : '1';
+    if (p <= 0.10 || p >= 0.90) { setScene(-1); return; }
+    let idx = 0;
+    for (let i = 0; i < scenes.length; i++) if (p >= scenes[i].at) idx = i;
+    setScene(idx);
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll, { passive: true });
+  onScroll();
 
   // Wire the download links to the latest release — direct .dmg/.exe for the
   // visitor's platform, falling back to the releases page.
