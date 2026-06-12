@@ -95,6 +95,17 @@
   .tagline .hl { color: var(--ink); }
   .kicker { font-family: var(--font-mono); font-size: 13px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); }
 
+  /* real-app screenshot on the outro */
+  .outro-shot {
+    width: auto; height: auto;
+    max-width: min(92vw, 960px); max-height: 44vh;
+    object-fit: contain;
+    border-radius: 12px;
+    border: 1px solid var(--border-strong);
+    box-shadow: 0 30px 90px -25px rgba(0,0,0,.85);
+    margin-top: 4px;
+  }
+
   .cta-row { display: flex; gap: 14px; margin-top: 8px; }
   .pill { display: inline-flex; align-items: center; gap: 9px; padding: 13px 22px; border-radius: 12px; font-weight: 600; font-size: 17px; }
   .pill.primary { background: var(--accent); color: #0c1f14; }
@@ -268,6 +279,7 @@
     .caption .ch { font-size: 19px; }
     .caption .cs { font-size: 13px; }
     .pill { font-size: 15px; padding: 12px 20px; }
+    .outro-shot { max-height: 30vh; border-radius: 8px; }
     .cta-row { flex-direction: column; width: 100%; max-width: 280px; }
     .pill { justify-content: center; }
     .url { font-size: 13px; }
@@ -456,6 +468,8 @@
     <div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#0c1f14" stroke-width="2.4"><circle cx="6" cy="6" r="2.4"/><circle cx="6" cy="18" r="2.4"/><circle cx="18" cy="12" r="2.4"/><path d="M6 8.4v7.2M8.4 18H12a4 4 0 0 0 4-4"/></svg></div>
     <div class="wordmark">Cairn</div>
     <div class="tagline"><span class="hl">Stage, review, and run</span> — without leaving your Git client.</div>
+    <img class="outro-shot" src="screenshot.png" loading="lazy" decoding="async"
+         alt="Cairn — commit graph, commit details, inline diff, and an AI agent session in the built-in terminal" />
     <div class="cta-row">
       <a class="pill primary" id="ctaDl" data-dl="auto" href="https://github.com/layatai/gitui-app/releases/latest" target="_blank" rel="noopener">⤓ Download — free</a>
       <a class="pill ghost" href="https://github.com/layatai/gitui-app/releases/latest" target="_blank" rel="noopener">macOS · Windows · Linux</a>
