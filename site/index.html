@@ -98,13 +98,18 @@
   /* real-app screenshot on the outro */
   .outro-shot {
     width: auto; height: auto;
-    max-width: min(92vw, 960px); max-height: 44vh;
+    max-width: min(92vw, 960px); max-height: 38vh;
     object-fit: contain;
     border-radius: 12px;
     border: 1px solid var(--border-strong);
     box-shadow: 0 30px 90px -25px rgba(0,0,0,.85);
     margin-top: 4px;
   }
+  .shot-cap { font-family: var(--font-mono); font-size: 12px; color: var(--ink-3); margin-top: -10px; }
+  #outro { gap: 14px; }
+
+  /* objection microcopy under the download CTA */
+  .trust { font-family: var(--font-mono); font-size: 12.5px; color: var(--ink-3); letter-spacing: .3px; }
 
   .cta-row { display: flex; gap: 14px; margin-top: 8px; }
   .pill { display: inline-flex; align-items: center; gap: 9px; padding: 13px 22px; border-radius: 12px; font-weight: 600; font-size: 17px; }
@@ -279,7 +284,8 @@
     .caption .ch { font-size: 19px; }
     .caption .cs { font-size: 13px; }
     .pill { font-size: 15px; padding: 12px 20px; }
-    .outro-shot { max-height: 30vh; border-radius: 8px; }
+    .outro-shot { max-height: 26vh; border-radius: 8px; }
+    .trust, .shot-cap { font-size: 11px; }
     .cta-row { flex-direction: column; width: 100%; max-width: 280px; }
     .pill { justify-content: center; }
     .url { font-size: 13px; }
@@ -460,7 +466,12 @@
     <div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#0c1f14" stroke-width="2.4"><circle cx="6" cy="6" r="2.4"/><circle cx="6" cy="18" r="2.4"/><circle cx="18" cy="12" r="2.4"/><path d="M6 8.4v7.2M8.4 18H12a4 4 0 0 0 4-4"/></svg></div>
     <div class="wordmark">Cairn</div>
     <div class="tagline"><span class="hl">A fast, native Git client</span> — line-level staging, inline blame, continuous review, and AI code review, all built in.</div>
-    <div class="kicker">macOS · Windows · Linux</div>
+    <div class="kicker">macOS today · Windows &amp; Linux coming</div>
+    <div class="cta-row">
+      <a class="pill primary" data-dl="auto" data-dl-label href="https://github.com/layatai/gitui-app/releases/latest" target="_blank" rel="noopener">⤓ Download — free</a>
+      <a class="pill ghost" id="tourBtn" href="#tour">Take the 60-second tour ↓</a>
+    </div>
+    <div class="trust">Signed &amp; notarized by Apple · No account · Free</div>
   </div>
 
   <!-- outro / CTA -->
@@ -470,11 +481,13 @@
     <div class="tagline"><span class="hl">Stage, review, and run</span> — without leaving your Git client.</div>
     <img class="outro-shot" src="screenshot.png" loading="lazy" decoding="async"
          alt="Cairn — commit graph, commit details, inline diff, and an AI agent session in the built-in terminal" />
+    <div class="shot-cap">The actual app — not a mockup.</div>
     <div class="cta-row">
-      <a class="pill primary" id="ctaDl" data-dl="auto" href="https://github.com/layatai/gitui-app/releases/latest" target="_blank" rel="noopener">⤓ Download — free</a>
-      <a class="pill ghost" href="https://github.com/layatai/gitui-app/releases/latest" target="_blank" rel="noopener">macOS · Windows · Linux</a>
+      <a class="pill primary" id="ctaDl" data-dl="auto" data-dl-label href="https://github.com/layatai/gitui-app/releases/latest" target="_blank" rel="noopener">⤓ Download — free</a>
+      <a class="pill ghost" href="https://github.com/layatai/gitui-app/releases/latest" target="_blank" rel="noopener">macOS today · Windows &amp; Linux coming</a>
     </div>
-    <a class="url" href="https://github.com/layatai/gitui-app/releases/latest" target="_blank" rel="noopener" style="text-decoration:none">github.com/layatai/gitui-app/releases</a>
+    <div class="trust">Signed &amp; notarized by Apple · No account · Free</div>
+    <a class="url" href="https://github.com/layatai/gitui-app/releases/latest" target="_blank" rel="noopener" style="text-decoration:none">Open releases &amp; changelog on GitHub →</a>
   </div>
 
 <!-- provides the scroll distance that drives the story -->
@@ -583,12 +596,24 @@
   onResize();
   onScroll();
 
+  // "Take the 60-second tour" — smooth-scroll past the intro into scene 1.
+  $('tourBtn')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    window.scrollTo({ top: max * 0.13, behavior: 'smooth' });
+  });
+
   // Wire the download links to the latest release — direct .dmg/.exe for the
   // visitor's platform, falling back to the releases page.
   const RELEASES = 'https://github.com/layatai/gitui-app/releases/latest';
   const ua = navigator.userAgent;
   const isMac = /Mac/.test(ua) || /Mac/.test(navigator.platform);
   const isWin = /Win/.test(ua) || /Win/.test(navigator.platform);
+  // Platform-specific CTA text. macOS is labeled immediately (the dmg always
+  // ships); Windows only once the release actually contains an installer.
+  const setDlLabels = (label) =>
+    document.querySelectorAll('[data-dl-label]').forEach((a) => { a.textContent = '⤓ ' + label; });
+  if (isMac) setDlLabels('Download for macOS — free');
   fetch('https://api.github.com/repos/layatai/gitui-app/releases/latest')
     .then((r) => (r.ok ? r.json() : null))
     .then((rel) => {
@@ -598,6 +623,7 @@
       const win = find('-setup.exe') || find('.exe') || find('.msi');
       const auto = isMac ? mac || RELEASES : isWin ? win || RELEASES : RELEASES;
       document.querySelectorAll('[data-dl="auto"]').forEach((a) => { a.href = auto; });
+      if (isWin && win) setDlLabels('Download for Windows — free');
     })
     .catch(() => {});
 </script>
