@@ -4,9 +4,10 @@ A fast, cross-platform desktop **Git client** — near-native performance with
 comprehensive workflow coverage. Built with **Tauri 2 + Rust (libgit2) + React/TypeScript**.
 
 This repository hosts the **signed, notarized installers**. Grab the latest from
-[**Releases**](../../releases/latest).
+[**Releases**](../../releases/latest), or see the interactive tour at
+[**layatai.github.io/gitui-app**](https://layatai.github.io/gitui-app/).
 
-![gitui](screenshot.png)
+![Cairn](site/screenshot.png)
 
 ## Download
 
