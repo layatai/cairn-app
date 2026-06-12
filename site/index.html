@@ -142,7 +142,7 @@
   .sb-i.active .br { color: var(--accent); }
 
   /* commit graph */
-  .center { display: grid; grid-template-rows: 1fr 168px; min-width: 0; }
+  .center { display: grid; grid-template-rows: 1fr 150px; min-width: 0; }
   .graph { overflow: hidden; position: relative; }
   .grow { display: grid; grid-template-columns: 86px 1fr auto; align-items: center; gap: 0; height: 30px; padding: 0 12px 0 0; font-size: 12.5px; border-bottom: 1px solid color-mix(in srgb, var(--border) 40%, transparent); }
   .grow:hover { background: var(--surface-2); }
@@ -470,14 +470,14 @@
 
   // Spotlight rects in fixed stage (1280×720) coordinates.
   const RECT = {
-    center: { x: 230, y: 114, w: 702, h: 470 }, // graph + diff
+    center: { x: 230, y: 114, w: 702, h: 438 }, // graph + diff
     dmodes: { x: 556, y: 396, w: 376, h: 26 },   // diff header: layout toggles + actions
-    blame:  { x: 232, y: 418, w: 700, h: 22 },   // first line + inline blame
-    stage:  { x: 232, y: 454, w: 700, h: 50 },   // selected +lines + Stage pill
-    review: { x: 230, y: 392, w: 702, h: 192 },  // whole diff (continuous review)
-    right:  { x: 922, y: 114, w: 312, h: 470 },  // review pane
+    blame:  { x: 230, y: 420, w: 702, h: 21 },   // first line + inline blame
+    stage:  { x: 230, y: 457, w: 702, h: 44 },   // selected +lines + Stage pill
+    review: { x: 230, y: 394, w: 702, h: 156 },  // whole diff (continuous review)
+    right:  { x: 922, y: 114, w: 312, h: 438 },  // review pane
     run:    { x: 1123, y: 83, w: 102, h: 33 },   // Run split button
-    term:   { x: 54,  y: 582, w: 1172, h: 82 },  // terminal
+    term:   { x: 54,  y: 550, w: 1172, h: 114 }, // terminal
   };
   function highlight(rect) {
     if (!rect) { spot.classList.remove('show'); return; }
@@ -509,10 +509,10 @@
     { at: 0.22, k: 'Diffs',          h: 'Unified, split or whole-file', s: 'Syntax-highlighted diffs that stay smooth even on huge files — switch layout right from the header.',          rect: RECT.dmodes, mf: { cx: 744, cy: 408, w: 430 } },
     { at: 0.32, k: 'Staging',        h: 'Stage by the line',           s: 'Select exactly the lines you mean — not just whole hunks — and stage them in one click.',                     rect: RECT.stage,  mf: { cx: 540, cy: 478, w: 580 } },
     { at: 0.43, k: 'Blame',          h: 'Who & why, inline',           s: 'GitLens-style blame on the hovered line — author, when, and the commit that introduced it.',                  rect: RECT.blame,  mf: { cx: 520, cy: 429, w: 640 } },
-    { at: 0.54, k: 'Review',         h: 'Every file, one scroll',      s: 'Continuous review of the whole changeset — like a pull request, right on your desktop.',                       rect: RECT.review, mf: { cx: 540, cy: 486, w: 580 } },
+    { at: 0.54, k: 'Review',         h: 'Every file, one scroll',      s: 'Continuous review of the whole changeset — like a pull request, right on your desktop.',                       rect: RECT.review, mf: { cx: 540, cy: 472, w: 600 } },
     { at: 0.64, k: 'AI code review', h: 'Review, inline',              s: 'Claude · Codex · Gemini · pi — structured findings you fix in one click, in an agent-chat panel.',            rect: RECT.right,  mf: { cx: 1078, cy: 280, w: 350 } },
-    { at: 0.74, k: 'Run configs',    h: 'Run, from the toolbar',       s: 'launch.json, tasks.json & package.json scripts — launched straight from the toolbar.',                        rect: RECT.run,    mf: { cx: 1112, cy: 130, w: 300 } },
-    { at: 0.84, k: 'Integrated terminal', h: 'Watch it run',           s: 'The command runs in a built-in terminal tab — no context switch.',                                            rect: RECT.term,   mf: { cx: 380, cy: 622, w: 540 } },
+    { at: 0.74, k: 'Run configs',    h: 'Run, from the toolbar',       s: 'launch.json, tasks.json & package.json scripts — launched straight from the toolbar.',                        rect: RECT.run,    mf: { cx: 1112, cy: 100, w: 300 } },
+    { at: 0.84, k: 'Integrated terminal', h: 'Watch it run',           s: 'The command runs in a built-in terminal tab — no context switch.',                                            rect: RECT.term,   mf: { cx: 380, cy: 600, w: 540 } },
   ];
 
   let MOBILE = matchMedia('(max-width: 820px)').matches;
