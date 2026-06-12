@@ -4,13 +4,28 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Cairn — a fast, native Git client with AI code review</title>
-<meta name="description" content="Cairn is a fast, native Git client: line-level staging, inline blame, continuous review, AI code review, and your editor's run configs — built in. Free for macOS, Windows, and Linux." />
+<meta name="description" content="Cairn is a fast, native Git client: line-level staging, inline blame, continuous review, AI code review, and your editor's run configs — built in. Free for macOS; Windows & Linux coming." />
+<link rel="canonical" href="https://layatai.github.io/gitui-app/" />
 <meta property="og:type" content="website" />
 <meta property="og:title" content="Cairn — a fast, native Git client" />
 <meta property="og:description" content="Line staging, inline blame, continuous review, AI code review, and run configs — native speed, free." />
 <meta property="og:image" content="https://layatai.github.io/gitui-app/screenshot.png" />
 <meta property="og:url" content="https://layatai.github.io/gitui-app/" />
 <meta name="twitter:card" content="summary_large_image" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Cairn",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "macOS",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "description": "A fast, native Git client with line-level staging, inline blame, continuous review, and AI code review built in.",
+  "screenshot": "https://layatai.github.io/gitui-app/screenshot.png",
+  "downloadUrl": "https://github.com/layatai/gitui-app/releases/latest",
+  "url": "https://layatai.github.io/gitui-app/"
+}
+</script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235fd08a' stroke-width='2.4'%3E%3Ccircle cx='6' cy='6' r='2.4'/%3E%3Ccircle cx='6' cy='18' r='2.4'/%3E%3Ccircle cx='18' cy='12' r='2.4'/%3E%3Cpath d='M6 8.4v7.2M8.4 18H12a4 4 0 0 0 4-4'/%3E%3C/svg%3E" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -89,9 +104,9 @@
     animation: pop .9s cubic-bezier(.2,.9,.2,1.1) both;
   }
   .logo svg { width: 46px; height: 46px; }
-  .wordmark { font-size: 64px; font-weight: 700; letter-spacing: -1.5px; }
+  .wordmark { font-size: 64px; font-weight: 700; letter-spacing: -1.5px; margin: 0; }
   .wordmark b { color: var(--accent); font-weight: 700; }
-  .tagline { font-size: 24px; color: var(--ink-2); font-weight: 500; max-width: 740px; line-height: 1.35; }
+  .tagline { font-size: 24px; color: var(--ink-2); font-weight: 500; max-width: 740px; line-height: 1.35; margin: 0; }
   .tagline .hl { color: var(--ink); }
   .kicker { font-family: var(--font-mono); font-size: 13px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); }
 
@@ -308,6 +323,38 @@
   a.pill { text-decoration: none; cursor: pointer; }
   a.pill.primary:hover { filter: brightness(1.06); }
 
+  /* ---- indexable content below the scroll story ---- */
+  .page-content {
+    position: relative; z-index: 45;
+    background: var(--bg);
+    border-top: 1px solid var(--border);
+    padding: 72px 28px 40px;
+  }
+  .page-content .inner { max-width: 1000px; margin: 0 auto; }
+  .page-content h2 { font-size: 30px; letter-spacing: -.6px; margin: 0 0 24px; }
+  .feat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 64px; }
+  .feat { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 18px 16px; }
+  .feat .k { font-family: var(--font-mono); font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 8px; }
+  .feat h3 { margin: 0 0 6px; font-size: 16.5px; letter-spacing: -.2px; }
+  .feat p { margin: 0; color: var(--ink-2); font-size: 14px; line-height: 1.55; }
+  .faq { max-width: 760px; margin-bottom: 56px; }
+  .faq h3 { font-size: 17px; margin: 24px 0 7px; letter-spacing: -.2px; }
+  .faq p { margin: 0; color: var(--ink-2); font-size: 15px; line-height: 1.6; }
+  .page-cta { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin: 0 0 10px; }
+  .page-content .trust { margin-bottom: 64px; }
+  .page-foot {
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+    border-top: 1px solid var(--border); padding-top: 20px;
+    color: var(--ink-3); font-size: 13px;
+  }
+  .page-foot a { color: var(--ink-2); }
+  .page-foot a:hover { color: var(--ink); }
+
+  /* fade the fixed story chrome once the visitor scrolls past the track */
+  .stage, .caption, .progress, .scroll-hint, .replay { transition: opacity .4s ease; }
+  body.past-story .stage, body.past-story .caption, body.past-story .progress,
+  body.past-story .scroll-hint, body.past-story .replay { opacity: 0 !important; pointer-events: none; }
+
   @keyframes pop { from { transform: scale(.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
   @keyframes blink { 50% { opacity: 0; } }
   .fade-up { animation: fadeUp .7s ease both; }
@@ -464,8 +511,8 @@
   <!-- intro -->
   <div class="overlay" id="intro">
     <div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#0c1f14" stroke-width="2.4"><circle cx="6" cy="6" r="2.4"/><circle cx="6" cy="18" r="2.4"/><circle cx="18" cy="12" r="2.4"/><path d="M6 8.4v7.2M8.4 18H12a4 4 0 0 0 4-4"/></svg></div>
-    <div class="wordmark">Cairn</div>
-    <div class="tagline"><span class="hl">A fast, native Git client</span> — line-level staging, inline blame, continuous review, and AI code review, all built in.</div>
+    <h1 class="wordmark">Cairn</h1>
+    <p class="tagline"><span class="hl">A fast, native Git client</span> — line-level staging, inline blame, continuous review, and AI code review, all built in.</p>
     <div class="kicker">macOS today · Windows &amp; Linux coming</div>
     <div class="cta-row">
       <a class="pill primary" data-dl="auto" data-dl-label href="https://github.com/layatai/gitui-app/releases/latest" target="_blank" rel="noopener">⤓ Download — free</a>
@@ -478,7 +525,7 @@
   <div class="overlay hide" id="outro">
     <div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#0c1f14" stroke-width="2.4"><circle cx="6" cy="6" r="2.4"/><circle cx="6" cy="18" r="2.4"/><circle cx="18" cy="12" r="2.4"/><path d="M6 8.4v7.2M8.4 18H12a4 4 0 0 0 4-4"/></svg></div>
     <div class="wordmark">Cairn</div>
-    <div class="tagline"><span class="hl">Stage, review, and run</span> — without leaving your Git client.</div>
+    <p class="tagline"><span class="hl">Stage, review, and run</span> — without leaving your Git client.</p>
     <img class="outro-shot" src="screenshot.png" loading="lazy" decoding="async"
          alt="Cairn — commit graph, commit details, inline diff, and an AI agent session in the built-in terminal" />
     <div class="shot-cap">The actual app — not a mockup.</div>
@@ -493,6 +540,49 @@
 <!-- provides the scroll distance that drives the story -->
 <div class="scroll-track"></div>
 <div class="scroll-hint" id="hint"><span>Scroll to explore</span><span class="arrow">↓</span></div>
+
+<!-- indexable content: the story's copy in normal document flow -->
+<section class="page-content" id="features">
+  <div class="inner">
+    <h2>Everything in one native client</h2>
+    <div class="feat-grid">
+      <article class="feat"><span class="k">The client</span><h3>A full Git workhorse</h3><p>Graph, branches, stash, interactive rebase, blame, history, conflicts, worktrees, bisect — fast and native, built with Rust and libgit2.</p></article>
+      <article class="feat"><span class="k">Diffs</span><h3>Unified, split or whole-file</h3><p>Syntax-highlighted diffs that stay smooth even on huge files — switch layout right from the header.</p></article>
+      <article class="feat"><span class="k">Staging</span><h3>Stage by the line</h3><p>Select exactly the lines you mean — not just whole hunks — and stage them in one click, in any diff layout.</p></article>
+      <article class="feat"><span class="k">Blame</span><h3>Who &amp; why, inline</h3><p>GitLens-style blame on the hovered line — author, when, and the commit that introduced it.</p></article>
+      <article class="feat"><span class="k">Review</span><h3>Every file, one scroll</h3><p>Continuous review of the whole changeset — like a pull request, right on your desktop.</p></article>
+      <article class="feat"><span class="k">AI code review</span><h3>Review, inline</h3><p>Claude · Codex · Gemini — structured findings you fix in one click, in an agent-chat panel. Your locally installed CLIs do the work.</p></article>
+      <article class="feat"><span class="k">Run configs</span><h3>Run, from the toolbar</h3><p>launch.json, tasks.json &amp; package.json scripts — launched straight from the toolbar.</p></article>
+      <article class="feat"><span class="k">Integrated terminal</span><h3>Watch it run</h3><p>Commands and AI agent sessions run in built-in terminal tabs — background tabs ring when an agent needs you.</p></article>
+    </div>
+
+    <h2>Questions, answered</h2>
+    <div class="faq">
+      <h3>Is Cairn free?</h3>
+      <p>Yes — free to download and use. No account, no sign-up, no telemetry dashboard to feed.</p>
+      <h3>Which platforms does it run on?</h3>
+      <p>macOS today, as a universal (Intel + Apple Silicon) DMG that's signed and notarized by Apple. Windows and Linux builds are planned.</p>
+      <h3>Does my code leave my machine?</h3>
+      <p>Cairn has no backend. Git operations run locally; AI features shell out to the CLIs you already have installed (Claude Code, Codex, Gemini), so the only network traffic is between those CLIs and your chosen provider.</p>
+      <h3>How is it different from other Git clients?</h3>
+      <p>Native speed (Tauri + Rust, not Electron) plus an AI layer that's built in rather than bolted on: AI code review with one-click fixes, agent terminal sessions, and AI commit messages — alongside the full Git toolset you'd expect.</p>
+    </div>
+
+    <div class="page-cta">
+      <a class="pill primary" data-dl="auto" data-dl-label href="https://github.com/layatai/gitui-app/releases/latest" target="_blank" rel="noopener">⤓ Download — free</a>
+      <a class="pill ghost" href="https://github.com/layatai/gitui-app/releases/latest" target="_blank" rel="noopener">Releases on GitHub</a>
+    </div>
+    <div class="trust">Signed &amp; notarized by Apple · No account · Free</div>
+
+    <footer class="page-foot">
+      <span>© Cairn</span>
+      <span>
+        <a href="https://github.com/layatai/gitui-app" target="_blank" rel="noopener">GitHub</a> ·
+        <a href="https://github.com/layatai/gitui-app/releases/latest" target="_blank" rel="noopener">Releases &amp; changelog</a>
+      </span>
+    </footer>
+  </div>
+</section>
 
 <script>
   const $ = (id) => document.getElementById(id);
@@ -572,13 +662,20 @@
     if (MOBILE) reframe();
   }
 
+  // The story spans the scroll-track only; the indexable content section
+  // below it scrolls normally once the story chrome has faded out.
+  const track = document.querySelector('.scroll-track');
+  const storyMax = () => Math.max(1, track.offsetTop + track.offsetHeight - window.innerHeight);
+
   function onScroll() {
-    const max = document.documentElement.scrollHeight - window.innerHeight;
-    const p = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+    const max = storyMax();
+    const p = Math.min(1, Math.max(0, window.scrollY / max));
+    const past = window.scrollY > max + 4;
+    document.body.classList.toggle('past-story', past);
     $('bar').style.width = (p * 100) + '%';
     $('app').classList.toggle('show', p > 0.06);
     $('intro').classList.toggle('hide', p > 0.09);
-    $('outro').classList.toggle('hide', p < 0.92);
+    $('outro').classList.toggle('hide', p < 0.92 || past);
     $('hint').style.opacity = p > 0.03 ? '0' : '1';
     if (p <= 0.10 || p >= 0.92) { setScene(-1); if (!MOBILE) highlight(null); return; }
     let idx = 0;
@@ -599,8 +696,7 @@
   // "Take the 60-second tour" — smooth-scroll past the intro into scene 1.
   $('tourBtn')?.addEventListener('click', (e) => {
     e.preventDefault();
-    const max = document.documentElement.scrollHeight - window.innerHeight;
-    window.scrollTo({ top: max * 0.13, behavior: 'smooth' });
+    window.scrollTo({ top: storyMax() * 0.13, behavior: 'smooth' });
   });
 
   // Wire the download links to the latest release — direct .dmg/.exe for the

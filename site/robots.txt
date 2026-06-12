@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://layatai.github.io/gitui-app/sitemap.xml
