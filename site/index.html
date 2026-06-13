@@ -265,16 +265,40 @@
   }
   .pal-q { display: flex; align-items: center; gap: 9px; padding: 11px 14px; border-bottom: 1px solid var(--border); color: var(--ink); }
   .pal-q .ic { width: 15px; height: 15px; opacity: .6; }
-  .pal-badge { margin-left: auto; font-size: 10px; text-transform: uppercase; letter-spacing: .6px; background: var(--surface-3); color: var(--ink-3); padding: 2px 8px; border-radius: 6px; }
+  .pal-text { flex: 1; }
+  /* query text per mode */
+  .pq { display: none; }
+  .palette[data-mode="files"]   .pq.files,
+  .palette[data-mode="text"]    .pq.text,
+  .palette[data-mode="symbols"] .pq.symbols { display: inline; }
+  /* mode tabs (Files · Text · Symbols), active one highlighted by data-mode */
+  .pal-modes { display: inline-flex; gap: 3px; margin-left: auto; background: var(--bg); padding: 2px; border-radius: 7px; }
+  .pal-modes i { font-style: normal; font-size: 10.5px; padding: 2px 8px; border-radius: 5px; color: var(--ink-3); }
+  .palette[data-mode="files"]   .pal-modes i[data-m="files"],
+  .palette[data-mode="text"]    .pal-modes i[data-m="text"],
+  .palette[data-mode="symbols"] .pal-modes i[data-m="symbols"] { background: var(--accent); color: #0c1f14; font-weight: 600; }
+  /* result groups — only the active mode's is shown */
+  .pal-grp { display: none; }
+  .palette[data-mode="files"]   .pal-grp.files,
+  .palette[data-mode="text"]    .pal-grp.text,
+  .palette[data-mode="symbols"] .pal-grp.symbols { display: block; }
   .pal-row { display: flex; align-items: center; gap: 9px; padding: 6px 14px; color: var(--ink-2); }
   .pal-row.sel { background: var(--accent-bg); color: var(--ink); box-shadow: inset 2px 0 0 var(--accent); }
   .pal-row b { font-weight: 600; }
   .pal-ic { width: 14px; text-align: center; color: var(--ink-3); }
   .pal-dir { color: var(--ink-3); font-size: 11px; }
-  .pal-proj { margin-left: auto; color: var(--ink-3); font-size: 11px; }
-  .pal-hit { background: color-mix(in oklch, #d6b34a 40%, transparent); border-radius: 3px; padding: 0 1px; }
-  .pal-foot { display: flex; align-items: center; justify-content: space-between; padding: 7px 14px; border-top: 1px solid var(--border); color: var(--ink-3); font-size: 11px; }
+  .pal-proj { margin-left: auto; color: var(--ink-3); font-size: 11px; padding-left: 8px; }
+  .pal-hit { background: color-mix(in oklch, #d6b34a 45%, transparent); border-radius: 3px; padding: 0 1px; }
+  .pal-loc { color: var(--ink-3); font-size: 11px; min-width: 96px; }
+  .pal-code { font-family: var(--font-mono); font-size: 11.5px; color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pal-kind { font-family: var(--font-mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: .5px; color: var(--ink-3); background: var(--surface-3); padding: 1px 6px; border-radius: 5px; min-width: 38px; text-align: center; }
+  .pal-foot { display: flex; align-items: center; gap: 10px; padding: 7px 14px; border-top: 1px solid var(--border); color: var(--ink-3); font-size: 11px; }
   .pal-acts { color: var(--accent-ink); }
+  .pal-opts { font-family: var(--font-mono); margin-left: auto; }
+  /* the Text-mode case/word/regex hint only matters for text search */
+  .palette:not([data-mode="text"]) .pal-opts { display: none; }
+  .pal-scope { margin-left: auto; }
+  .palette[data-mode="text"] .pal-opts + .pal-scope { margin-left: 0; }
 
   /* ---------- caption + spotlight ---------- */
   .caption {
@@ -521,14 +545,41 @@
       <div>  ➜  Local:   <span style="color:var(--cyan)">http://localhost:5173/</span> <span class="cursor"></span></div>
     </div>
 
-    <!-- ⌘P search palette (revealed only during its scene) -->
-    <div class="palette" id="palette" data-scene-reveal>
+    <!-- ⌘P search palette — mode set per scene via data-mode (files|text|symbols) -->
+    <div class="palette" id="palette" data-scene-reveal data-mode="files">
       <div class="pal-in">
-        <div class="pal-q"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg> <span>DiffViewer<span class="cursor"></span></span><span class="pal-badge">Files</span></div>
-        <div class="pal-row sel"><span class="pal-ic">⛁</span><b>DiffViewer.tsx</b><span class="pal-dir">src/components</span><span class="pal-proj">cairn</span></div>
-        <div class="pal-row"><span class="pal-ic">≣</span><b>renderDiff</b><span class="pal-dir">src/diff.rs:88</span><span class="pal-proj">engine</span></div>
-        <div class="pal-row"><span class="pal-ic">⌕</span><span><span class="pal-hit">DiffViewer</span> mounts the virtualized rows</span><span class="pal-proj">docs</span></div>
-        <div class="pal-foot"><span class="pal-acts">Open in Cairn · Edit · Add to agent</span><span class="pal-scope">⛃ All repos ▾</span></div>
+        <div class="pal-q">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <span class="pal-text"><span class="pq files">DiffViewer</span><span class="pq text">resolve_command</span><span class="pq symbols">renderDiff</span><span class="cursor"></span></span>
+          <span class="pal-modes"><i data-m="files">Files</i><i data-m="text">Text</i><i data-m="symbols">Symbols</i></span>
+        </div>
+
+        <!-- Files -->
+        <div class="pal-grp files">
+          <div class="pal-row sel"><span class="pal-ic">⛁</span><b>DiffViewer.tsx</b><span class="pal-dir">src/components</span><span class="pal-proj">cairn</span></div>
+          <div class="pal-row"><span class="pal-ic">⛁</span><b>DiffViewer.test.tsx</b><span class="pal-dir">src/components</span><span class="pal-proj">cairn</span></div>
+          <div class="pal-row"><span class="pal-ic">⛁</span><b>diff_viewer.rs</b><span class="pal-dir">src-tauri/src/git</span><span class="pal-proj">engine</span></div>
+        </div>
+
+        <!-- Text (ripgrep) -->
+        <div class="pal-grp text">
+          <div class="pal-row sel"><span class="pal-ic">⌕</span><span class="pal-loc">commands.rs:142</span><code class="pal-code">let cmd = <span class="pal-hit">resolve_command</span>(&amp;cfg)?;</code><span class="pal-proj">engine</span></div>
+          <div class="pal-row"><span class="pal-ic">⌕</span><span class="pal-loc">runconfig.rs:88</span><code class="pal-code">fn <span class="pal-hit">resolve_command</span>(c: &amp;Cfg)</code><span class="pal-proj">engine</span></div>
+          <div class="pal-row"><span class="pal-ic">⌕</span><span class="pal-loc">run.test.ts:31</span><code class="pal-code">expect(<span class="pal-hit">resolveCommand</span>(x))</code><span class="pal-proj">cairn</span></div>
+        </div>
+
+        <!-- Symbols -->
+        <div class="pal-grp symbols">
+          <div class="pal-row sel"><span class="pal-kind">fn</span><b>renderDiff</b><span class="pal-dir">diff.rs:88</span><span class="pal-proj">engine</span></div>
+          <div class="pal-row"><span class="pal-kind">const</span><b>renderDiffRow</b><span class="pal-dir">DiffViewer.tsx:204</span><span class="pal-proj">cairn</span></div>
+          <div class="pal-row"><span class="pal-kind">struct</span><b>DiffRenderer</b><span class="pal-dir">render.rs:12</span><span class="pal-proj">engine</span></div>
+        </div>
+
+        <div class="pal-foot">
+          <span class="pal-acts">Open in Cairn · Edit · Add to agent</span>
+          <span class="pal-opts">Aa · ab · .*</span>
+          <span class="pal-scope">⛃ All repos ▾</span>
+        </div>
       </div>
     </div>
   </div>
@@ -674,13 +725,15 @@
   // Scroll-driven story. `sel` = the element(s) to spotlight (desktop) / zoom to (mobile).
   const scenes = [
     { at: 0.12, sel: '#center',             k: 'The client',          h: 'A full Git workhorse',         s: 'Graph, branches, stash, interactive rebase, blame, history, conflicts, worktrees, bisect — fast and native.' },
-    { at: 0.21, sel: '#dhTools',            k: 'Diffs',               h: 'Unified, split or whole-file', s: 'Syntax-highlighted diffs that stay smooth even on huge files — switch layout right from the header.' },
-    { at: 0.30, sel: '.dl.sel, #stagePill', k: 'Staging',            h: 'Stage by the line',            s: 'Select exactly the lines you mean — not just whole hunks — and stage them in one click.' },
-    { at: 0.39, sel: '#dlBlame',            k: 'Blame',               h: 'Who & why, inline',            s: 'GitLens-style blame on the hovered line — author, when, and the commit that introduced it.' },
-    { at: 0.48, sel: '#diff',               k: 'Review',              h: 'Every file, one scroll',       s: 'Continuous review of the whole changeset — like a pull request, right on your desktop.' },
-    { at: 0.57, sel: '#right',              k: 'AI code review',      h: 'Review, inline',               s: 'Claude · Codex · Gemini · pi — structured findings you fix in one click, in an agent-chat panel.' },
-    { at: 0.66, sel: '#palette .pal-in', reveal: '#palette', k: 'Search', h: 'Find anything, ⌘P',    s: 'Fuzzy file names, full-text (ripgrep) and symbol definitions across every recent project — with a preview that jumps to the line.' },
-    { at: 0.75, sel: '#tb-run',             k: 'Run configs',         h: 'Run, from the toolbar',        s: 'launch.json, tasks.json & package.json scripts — launched straight from the toolbar.' },
+    { at: 0.20, sel: '#dhTools',            k: 'Diffs',               h: 'Unified, split or whole-file', s: 'Syntax-highlighted diffs that stay smooth even on huge files — switch layout right from the header.' },
+    { at: 0.27, sel: '.dl.sel, #stagePill', k: 'Staging',            h: 'Stage by the line',            s: 'Select exactly the lines you mean — not just whole hunks — and stage them in one click.' },
+    { at: 0.34, sel: '#dlBlame',            k: 'Blame',               h: 'Who & why, inline',            s: 'GitLens-style blame on the hovered line — author, when, and the commit that introduced it.' },
+    { at: 0.41, sel: '#diff',               k: 'Review',              h: 'Every file, one scroll',       s: 'Continuous review of the whole changeset — like a pull request, right on your desktop.' },
+    { at: 0.48, sel: '#right',              k: 'AI code review',      h: 'Review, inline',               s: 'Claude · Codex · Gemini · pi — structured findings you fix in one click, in an agent-chat panel.' },
+    { at: 0.55, sel: '#palette .pal-in', reveal: '#palette', mode: 'files',   k: 'Search · Files',   h: 'Jump to any file, ⌘P',     s: 'Fuzzy-find file names across every recent project — or a chosen subset — best matches first.' },
+    { at: 0.62, sel: '#palette .pal-in', reveal: '#palette', mode: 'text',    k: 'Search · Text',    h: 'Full-text, ripgrep-fast',  s: 'Stream matches as you type (⌥C/⌥W/⌥R for case · word · regex), each with a highlighted snippet — grouped by file.' },
+    { at: 0.69, sel: '#palette .pal-in', reveal: '#palette', mode: 'symbols', k: 'Search · Symbols', h: 'Go to definition',         s: 'Find functions, types, classes & more by name across 12 languages — jump straight to where they’re defined.' },
+    { at: 0.77, sel: '#tb-run',             k: 'Run configs',         h: 'Run, from the toolbar',        s: 'launch.json, tasks.json & package.json scripts — launched straight from the toolbar.' },
     { at: 0.84, sel: '#term',               k: 'Integrated terminal', h: 'Watch it run',                 s: 'Commands & AI agents run in built-in tabs — and you can drag or paste a file (even an image) straight into Claude.' },
   ];
 
@@ -703,7 +756,11 @@
       cap.classList.remove('show');
     } else {
       caption(scenes[i].k, scenes[i].h, scenes[i].s);
-      if (scenes[i].reveal) document.querySelector(scenes[i].reveal)?.classList.add('show');
+      if (scenes[i].reveal) {
+        const el = document.querySelector(scenes[i].reveal);
+        el?.classList.add('show');
+        if (scenes[i].mode) el?.setAttribute('data-mode', scenes[i].mode); // Files/Text/Symbols
+      }
     }
     if (MOBILE) reframe();
   }
