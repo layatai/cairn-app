@@ -250,6 +250,32 @@
   .term .dim { color: var(--ink-3); }
   .cursor { display: inline-block; width: 7px; height: 13px; background: var(--accent); vertical-align: -2px; animation: blink 1s steps(1) infinite; }
 
+  /* ---------- ⌘P search palette (revealed during its scene) ---------- */
+  .palette {
+    position: absolute; inset: 0; z-index: 40;
+    display: flex; align-items: flex-start; justify-content: center;
+    padding-top: 58px; background: rgba(0,0,0,.42);
+    opacity: 0; visibility: hidden; transition: opacity .35s ease;
+  }
+  .palette.show { opacity: 1; visibility: visible; }
+  .pal-in {
+    width: 62%; max-width: 560px; background: var(--surface);
+    border: 1px solid var(--border-strong); border-radius: 11px;
+    box-shadow: 0 24px 70px rgba(0,0,0,.55); overflow: hidden; font-size: 12.5px;
+  }
+  .pal-q { display: flex; align-items: center; gap: 9px; padding: 11px 14px; border-bottom: 1px solid var(--border); color: var(--ink); }
+  .pal-q .ic { width: 15px; height: 15px; opacity: .6; }
+  .pal-badge { margin-left: auto; font-size: 10px; text-transform: uppercase; letter-spacing: .6px; background: var(--surface-3); color: var(--ink-3); padding: 2px 8px; border-radius: 6px; }
+  .pal-row { display: flex; align-items: center; gap: 9px; padding: 6px 14px; color: var(--ink-2); }
+  .pal-row.sel { background: var(--accent-bg); color: var(--ink); box-shadow: inset 2px 0 0 var(--accent); }
+  .pal-row b { font-weight: 600; }
+  .pal-ic { width: 14px; text-align: center; color: var(--ink-3); }
+  .pal-dir { color: var(--ink-3); font-size: 11px; }
+  .pal-proj { margin-left: auto; color: var(--ink-3); font-size: 11px; }
+  .pal-hit { background: color-mix(in oklch, #d6b34a 40%, transparent); border-radius: 3px; padding: 0 1px; }
+  .pal-foot { display: flex; align-items: center; justify-content: space-between; padding: 7px 14px; border-top: 1px solid var(--border); color: var(--ink-3); font-size: 11px; }
+  .pal-acts { color: var(--accent-ink); }
+
   /* ---------- caption + spotlight ---------- */
   .caption {
     position: fixed; left: 52px; bottom: 64px; z-index: 30;
@@ -405,7 +431,7 @@
         <div class="sb-h">Remotes</div>
         <div class="sb-i"><svg class="br" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12a8 8 0 1 0 16 0 8 8 0 0 0-16 0zM4 12h16"/></svg> origin/main</div>
         <div class="sb-h">Tags</div>
-        <div class="sb-i"><svg class="br" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7l9-4 9 4-9 4-9-4z"/></svg> v0.6.0</div>
+        <div class="sb-i"><svg class="br" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7l9-4 9 4-9 4-9-4z"/></svg> v0.6.2</div>
       </div>
 
       <!-- center: graph + diff -->
@@ -494,6 +520,17 @@
       <div class="ok">  VITE v6.0  ready in 412 ms</div>
       <div>  ➜  Local:   <span style="color:var(--cyan)">http://localhost:5173/</span> <span class="cursor"></span></div>
     </div>
+
+    <!-- ⌘P search palette (revealed only during its scene) -->
+    <div class="palette" id="palette" data-scene-reveal>
+      <div class="pal-in">
+        <div class="pal-q"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg> <span>DiffViewer<span class="cursor"></span></span><span class="pal-badge">Files</span></div>
+        <div class="pal-row sel"><span class="pal-ic">⛁</span><b>DiffViewer.tsx</b><span class="pal-dir">src/components</span><span class="pal-proj">cairn</span></div>
+        <div class="pal-row"><span class="pal-ic">≣</span><b>renderDiff</b><span class="pal-dir">src/diff.rs:88</span><span class="pal-proj">engine</span></div>
+        <div class="pal-row"><span class="pal-ic">⌕</span><span><span class="pal-hit">DiffViewer</span> mounts the virtualized rows</span><span class="pal-proj">docs</span></div>
+        <div class="pal-foot"><span class="pal-acts">Open in Cairn · Edit · Add to agent</span><span class="pal-scope">⛃ All repos ▾</span></div>
+      </div>
+    </div>
   </div>
 
   <div class="spotlight" id="spot"></div>
@@ -551,8 +588,9 @@
       <article class="feat"><span class="k">Blame</span><h3>Who &amp; why, inline</h3><p>GitLens-style blame on the hovered line — author, when, and the commit that introduced it.</p></article>
       <article class="feat"><span class="k">Review</span><h3>Every file, one scroll</h3><p>Continuous review of the whole changeset — like a pull request, right on your desktop.</p></article>
       <article class="feat"><span class="k">AI code review</span><h3>Review before the PR</h3><p>Review your working changes with Claude · Codex · Gemini — structured findings you fix in one click, in an agent-chat panel. Your own installed CLIs do the work; nothing goes to a Cairn server.</p></article>
+      <article class="feat"><span class="k">Search</span><h3>Find anything, across every repo</h3><p>One palette (⌘P) fuzzy-finds file names, full-text matches (ripgrep-fast) and symbol definitions across all your recent projects — or a chosen subset. A live, syntax-highlighted preview jumps straight to the matched line.</p></article>
       <article class="feat"><span class="k">Run configs</span><h3>Run, from the toolbar</h3><p>launch.json, tasks.json &amp; package.json scripts — launched straight from the toolbar.</p></article>
-      <article class="feat"><span class="k">Integrated terminal</span><h3>Watch it run</h3><p>Commands and AI agent sessions run in built-in terminal tabs — background tabs ring when an agent needs you.</p></article>
+      <article class="feat"><span class="k">Integrated terminal</span><h3>Watch it run</h3><p>Commands and AI agent sessions run in built-in terminal tabs — background tabs ring when an agent needs you. Drag or paste a file — even an image — straight into Claude or any agent.</p></article>
     </div>
 
     <h2>Questions, answered</h2>
@@ -636,13 +674,14 @@
   // Scroll-driven story. `sel` = the element(s) to spotlight (desktop) / zoom to (mobile).
   const scenes = [
     { at: 0.12, sel: '#center',             k: 'The client',          h: 'A full Git workhorse',         s: 'Graph, branches, stash, interactive rebase, blame, history, conflicts, worktrees, bisect — fast and native.' },
-    { at: 0.22, sel: '#dhTools',            k: 'Diffs',               h: 'Unified, split or whole-file', s: 'Syntax-highlighted diffs that stay smooth even on huge files — switch layout right from the header.' },
-    { at: 0.32, sel: '.dl.sel, #stagePill', k: 'Staging',            h: 'Stage by the line',            s: 'Select exactly the lines you mean — not just whole hunks — and stage them in one click.' },
-    { at: 0.43, sel: '#dlBlame',            k: 'Blame',               h: 'Who & why, inline',            s: 'GitLens-style blame on the hovered line — author, when, and the commit that introduced it.' },
-    { at: 0.54, sel: '#diff',               k: 'Review',              h: 'Every file, one scroll',       s: 'Continuous review of the whole changeset — like a pull request, right on your desktop.' },
-    { at: 0.64, sel: '#right',              k: 'AI code review',      h: 'Review, inline',               s: 'Claude · Codex · Gemini · pi — structured findings you fix in one click, in an agent-chat panel.' },
-    { at: 0.74, sel: '#tb-run',             k: 'Run configs',         h: 'Run, from the toolbar',        s: 'launch.json, tasks.json & package.json scripts — launched straight from the toolbar.' },
-    { at: 0.84, sel: '#term',               k: 'Integrated terminal', h: 'Watch it run',                 s: 'The command runs in a built-in terminal tab — no context switch.' },
+    { at: 0.21, sel: '#dhTools',            k: 'Diffs',               h: 'Unified, split or whole-file', s: 'Syntax-highlighted diffs that stay smooth even on huge files — switch layout right from the header.' },
+    { at: 0.30, sel: '.dl.sel, #stagePill', k: 'Staging',            h: 'Stage by the line',            s: 'Select exactly the lines you mean — not just whole hunks — and stage them in one click.' },
+    { at: 0.39, sel: '#dlBlame',            k: 'Blame',               h: 'Who & why, inline',            s: 'GitLens-style blame on the hovered line — author, when, and the commit that introduced it.' },
+    { at: 0.48, sel: '#diff',               k: 'Review',              h: 'Every file, one scroll',       s: 'Continuous review of the whole changeset — like a pull request, right on your desktop.' },
+    { at: 0.57, sel: '#right',              k: 'AI code review',      h: 'Review, inline',               s: 'Claude · Codex · Gemini · pi — structured findings you fix in one click, in an agent-chat panel.' },
+    { at: 0.66, sel: '#palette .pal-in', reveal: '#palette', k: 'Search', h: 'Find anything, ⌘P',    s: 'Fuzzy file names, full-text (ripgrep) and symbol definitions across every recent project — with a preview that jumps to the line.' },
+    { at: 0.75, sel: '#tb-run',             k: 'Run configs',         h: 'Run, from the toolbar',        s: 'launch.json, tasks.json & package.json scripts — launched straight from the toolbar.' },
+    { at: 0.84, sel: '#term',               k: 'Integrated terminal', h: 'Watch it run',                 s: 'Commands & AI agents run in built-in tabs — and you can drag or paste a file (even an image) straight into Claude.' },
   ];
 
   let MOBILE = matchMedia('(max-width: 820px)').matches;
@@ -658,8 +697,14 @@
   function setScene(i) {
     if (i === current) return;
     current = i;
-    if (i < 0) cap.classList.remove('show');
-    else caption(scenes[i].k, scenes[i].h, scenes[i].s);
+    // Overlays tied to a scene (e.g. the ⌘P palette) — show only on their scene.
+    document.querySelectorAll('[data-scene-reveal]').forEach((el) => el.classList.remove('show'));
+    if (i < 0) {
+      cap.classList.remove('show');
+    } else {
+      caption(scenes[i].k, scenes[i].h, scenes[i].s);
+      if (scenes[i].reveal) document.querySelector(scenes[i].reveal)?.classList.add('show');
+    }
     if (MOBILE) reframe();
   }
 
