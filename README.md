@@ -5,7 +5,7 @@ comprehensive workflow coverage. Built with **Tauri 2 + Rust (libgit2) + React/T
 
 This repository hosts the **signed, notarized installers**. Grab the latest from
 [**Releases**](../../releases/latest), or see the interactive tour at
-[**layatai.github.io/gitui-app**](https://layatai.github.io/gitui-app/).
+[**layatai.github.io/cairn-app**](https://layatai.github.io/cairn-app/).
 
 ![Cairn](site/screenshot.png)
 
