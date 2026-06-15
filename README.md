@@ -1,4 +1,4 @@
-# gitui
+# Cairn
 
 A fast, cross-platform desktop **Git client** — near-native performance with
 comprehensive workflow coverage. Built with **Tauri 2 + Rust (libgit2) + React/TypeScript**.
@@ -13,13 +13,13 @@ This repository hosts the **signed, notarized installers**. Grab the latest from
 
 | Platform | File | Notes |
 |---|---|---|
-| **macOS** (Intel + Apple Silicon) | `gitui_<version>_universal.dmg` | Universal binary, **notarized** by Apple — opens with no Gatekeeper warning |
+| **macOS** (Intel + Apple Silicon) | `Cairn_<version>_universal.dmg` | Universal binary, **notarized** by Apple — opens with no Gatekeeper warning |
 | **Windows** | `.msi` / `-setup.exe` | _coming soon_ |
 
 ## Install (macOS)
 
 1. Download the `.dmg` from [Releases](../../releases/latest).
-2. Open it and drag **gitui** into your **Applications** folder.
+2. Open it and drag **Cairn** into your **Applications** folder.
 3. Launch it — it's signed with a Developer ID and notarized, so it just opens.
 
 ## Features
@@ -40,4 +40,4 @@ This repository hosts the **signed, notarized installers**. Grab the latest from
 
 ---
 
-© gitui. Signed & notarized for distribution.
+© Cairn. Signed & notarized for distribution.
