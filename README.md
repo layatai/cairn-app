@@ -9,7 +9,19 @@ packages, Docker image, and the [Cairn website](https://layatai.github.io/cairn-
 [Download the latest release](https://github.com/layatai/cairn-app/releases/latest)
 · [Interactive tour](https://layatai.github.io/cairn-app/)
 
-![Cairn](site/screenshot.png)
+## Screenshots
+
+### Desktop app
+
+![Cairn desktop app with terminal sessions, repository history, working tree, and diff preview](site/screenshot.png)
+
+### Standalone TUI
+
+![Cairn TUI repository workspace with branches, diff, history, changes, terminal sessions, and AI agents](site/screenshots/tui-workspace.png)
+
+| Attached diff review | Attached AI-agent session |
+|---|---|
+| ![Cairn TUI reviewing an attached agent diff](site/screenshots/tui-diff-review.png) | ![Cairn TUI with an attached Codex session and working-tree changes](site/screenshots/tui-agent-session.png) |
 
 ## Downloads
 
