@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Cairn — a fast, native Git client with AI code review</title>
-<meta name="description" content="Cairn is the native Git client with AI code review built in: review your working changes with your own agents and fix them in one click, before you push. Plus line staging, inline blame, and continuous review. Free for macOS and Windows; Linux coming." />
+<meta name="description" content="Cairn is the native Git client with AI code review built in, plus a detachable terminal UI for macOS, Linux, and Windows. Review, stage, and run your own agents without leaving Git." />
 <link rel="canonical" href="https://layatai.github.io/cairn-app/" />
 <meta property="og:type" content="website" />
 <meta property="og:title" content="Cairn — the Git client with AI code review built in" />
@@ -18,7 +18,7 @@
   "@type": "SoftwareApplication",
   "name": "Cairn",
   "applicationCategory": "DeveloperApplication",
-  "operatingSystem": "macOS, Windows",
+  "operatingSystem": "macOS, Windows, Linux (terminal UI)",
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
   "description": "The native Git client with AI code review built in — review your working changes with your own agents and fix them in one click, before you push.",
   "screenshot": "https://layatai.github.io/cairn-app/screenshot.png",
@@ -391,6 +391,28 @@
   .faq p { margin: 0; color: var(--ink-2); font-size: 15px; line-height: 1.6; }
   .page-cta { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin: 0 0 10px; }
   .page-content .trust { margin-bottom: 64px; }
+  .install-section { margin: 0 0 64px; scroll-margin-top: 92px; }
+  .install-lead { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(250px, .85fr); gap: 28px; align-items: start; margin-bottom: 18px; }
+  .install-lead h2 { margin: 0; max-width: 620px; }
+  .install-lead p { margin: 0; color: var(--ink-2); font-size: 15px; line-height: 1.6; }
+  .install-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .install-card { position: relative; overflow: hidden; background: #11130f; border: 1px solid var(--border-strong); border-radius: 13px; padding: 16px; box-shadow: inset 0 1px rgba(255,255,255,.025); }
+  .install-card::after { content: ""; position: absolute; width: 150px; height: 150px; right: -70px; bottom: -105px; border: 1px solid color-mix(in srgb, var(--accent) 32%, transparent); border-radius: 50%; }
+  .install-platform { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 13px; }
+  .install-platform strong { font-size: 14px; letter-spacing: .1px; }
+  .install-platform span { font-family: var(--font-mono); color: var(--ink-3); font-size: 10.5px; text-transform: uppercase; letter-spacing: 1.2px; }
+  .command-row { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: center; border: 1px solid var(--border); border-radius: 9px; background: #0b0c0a; padding: 8px 8px 8px 12px; }
+  .command-row code { color: var(--accent-ink); font-family: var(--font-mono); font-size: 12px; white-space: nowrap; overflow-x: auto; scrollbar-width: thin; }
+  .copy-command { appearance: none; border: 1px solid var(--border-strong); background: var(--surface-2); color: var(--ink-2); border-radius: 7px; padding: 6px 9px; font: 600 11px var(--font-ui); cursor: pointer; }
+  .copy-command:hover { color: var(--ink); border-color: var(--accent); }
+  .copy-command.copied { background: var(--accent-bg); color: var(--accent-ink); border-color: color-mix(in srgb, var(--accent) 55%, var(--border)); }
+  .install-note { display: flex; gap: 8px; align-items: center; margin-top: 12px; color: var(--ink-3); font: 12px var(--font-mono); }
+  .install-note b { color: var(--accent); font-weight: 500; }
+  @media (max-width: 820px) {
+    .install-lead, .install-grid { grid-template-columns: 1fr; }
+    .install-lead { gap: 10px; }
+    .command-row code { font-size: 10.5px; }
+  }
   .page-foot {
     display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
     border-top: 1px solid var(--border); padding-top: 20px;
@@ -417,6 +439,7 @@
     Cairn
   </a>
   <div class="nav-actions">
+    <a class="nav-link" href="#terminal">Terminal UI</a>
     <a class="nav-link" href="https://github.com/layatai/cairn-app" target="_blank" rel="noopener">GitHub</a>
     <a class="nav-dl" id="navDl" data-dl="auto" href="https://github.com/layatai/cairn-app/releases/latest" target="_blank" rel="noopener">↓ Download</a>
   </div>
@@ -600,7 +623,7 @@
     <div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#0c1f14" stroke-width="2.4"><circle cx="6" cy="6" r="2.4"/><circle cx="6" cy="18" r="2.4"/><circle cx="18" cy="12" r="2.4"/><path d="M6 8.4v7.2M8.4 18H12a4 4 0 0 0 4-4"/></svg></div>
     <h1 class="wordmark">Cairn</h1>
     <p class="tagline"><span class="hl">AI code review, built into Git.</span> Review your working changes with the agents you already run — and fix them in one click, before you push. Native speed, your machine.</p>
-    <div class="kicker">macOS &amp; Windows · Linux coming</div>
+    <div class="kicker">Desktop on macOS &amp; Windows · TUI on macOS, Linux &amp; Windows</div>
     <div class="cta-row">
       <a class="pill primary" data-dl="auto" data-dl-label href="https://github.com/layatai/cairn-app/releases/latest" target="_blank" rel="noopener">⤓ Download — free</a>
       <a class="pill ghost" id="tourBtn" href="#tour">Take the 60-second tour ↓</a>
@@ -618,7 +641,7 @@
     <div class="shot-cap">The actual app — not a mockup.</div>
     <div class="cta-row">
       <a class="pill primary" id="ctaDl" data-dl="auto" data-dl-label href="https://github.com/layatai/cairn-app/releases/latest" target="_blank" rel="noopener">⤓ Download — free</a>
-      <a class="pill ghost" href="https://github.com/layatai/cairn-app/releases/latest" target="_blank" rel="noopener">macOS &amp; Windows · Linux coming</a>
+      <a class="pill ghost" href="#terminal">Install the terminal UI</a>
     </div>
     <div class="trust">Your own AI agents · No account · No telemetry · Notarized on macOS · Free</div>
     <a class="url" href="https://github.com/layatai/cairn-app/releases/latest" target="_blank" rel="noopener" style="text-decoration:none">Open releases &amp; changelog on GitHub →</a>
@@ -642,14 +665,39 @@
       <article class="feat"><span class="k">Search</span><h3>Find anything, across every repo</h3><p>One palette (⌘P) fuzzy-finds file names, full-text matches (ripgrep-fast) and symbol definitions across all your recent projects — or a chosen subset. A live, syntax-highlighted preview jumps straight to the matched line.</p></article>
       <article class="feat"><span class="k">Run configs</span><h3>Run, from the toolbar</h3><p>launch.json, tasks.json &amp; package.json scripts — launched straight from the toolbar.</p></article>
       <article class="feat"><span class="k">Integrated terminal</span><h3>Watch it run</h3><p>Commands and AI agent sessions run in built-in terminal tabs — background tabs ring when an agent needs you. Drag or paste a file — even an image — straight into Claude or any agent.</p></article>
+      <article class="feat"><span class="k">Terminal UI</span><h3>Detach now. Resume anywhere.</h3><p>Run Cairn from a repository, detach without stopping the process, and reconnect later. Agent-native recovery keeps supported conversations resumable after a host restart.</p></article>
     </div>
+
+    <section class="install-section" id="terminal">
+      <div class="install-lead">
+        <h2>Cairn, without leaving the terminal</h2>
+        <p>The standalone TUI ships with a native session host for real detach and reconnect. The checksum-verified installer is idempotent: run the same command later to update.</p>
+      </div>
+      <div class="install-grid">
+        <article class="install-card">
+          <div class="install-platform"><strong>macOS, Linux or WSL2</strong><span>x64 · ARM64</span></div>
+          <div class="command-row">
+            <code>curl -fsSL --proto '=https' --tlsv1.2 https://layatai.github.io/cairn-app/install.sh | bash</code>
+            <button class="copy-command" type="button" data-copy aria-label="Copy macOS and Linux install command">Copy</button>
+          </div>
+        </article>
+        <article class="install-card">
+          <div class="install-platform"><strong>Windows PowerShell</strong><span>x64 · ARM64</span></div>
+          <div class="command-row">
+            <code>iwr -useb https://layatai.github.io/cairn-app/install.ps1 | iex</code>
+            <button class="copy-command" type="button" data-copy aria-label="Copy Windows install command">Copy</button>
+          </div>
+        </article>
+      </div>
+      <div class="install-note"><b>↳</b><span>Run <strong>cairn</strong> in any Git repository. Press <strong>Ctrl+]</strong> to detach; run <strong>cairn</strong> again to reconnect.</span></div>
+    </section>
 
     <h2>Questions, answered</h2>
     <div class="faq">
       <h3>Is Cairn free?</h3>
       <p>Yes — free to download and use. No account, no sign-up, no telemetry dashboard to feed.</p>
       <h3>Which platforms does it run on?</h3>
-      <p>macOS — a universal (Intel + Apple Silicon) DMG, signed and notarized by Apple — and Windows, as a native installer (.exe or .msi). A Linux build is planned.</p>
+      <p>The desktop app ships for macOS — as a signed and notarized universal DMG — and Windows as a native installer. The standalone TUI ships for macOS universal, Linux x64/ARM64, and Windows x64/ARM64.</p>
       <h3>Will Windows warn me on first launch?</h3>
       <p>The Windows installer isn't code-signed yet, so SmartScreen may flag it. Click <strong>More info → Run anyway</strong> to continue — it's the same app, just without a paid Windows certificate. (The macOS build is signed and notarized by Apple, so it runs without warnings.)</p>
       <h3>Does my code leave my machine?</h3>
@@ -802,6 +850,21 @@
   $('tourBtn')?.addEventListener('click', (e) => {
     e.preventDefault();
     window.scrollTo({ top: storyMax() * 0.13, behavior: 'smooth' });
+  });
+
+  document.querySelectorAll('[data-copy]').forEach((button) => {
+    button.addEventListener('click', async () => {
+      const command = button.previousElementSibling?.textContent?.trim();
+      if (!command) return;
+      try {
+        await navigator.clipboard.writeText(command);
+        button.textContent = 'Copied';
+        button.classList.add('copied');
+        setTimeout(() => { button.textContent = 'Copy'; button.classList.remove('copied'); }, 1600);
+      } catch {
+        window.prompt('Copy this command:', command);
+      }
+    });
   });
 
   // Wire the download links to the latest release — direct .dmg/.exe for the
