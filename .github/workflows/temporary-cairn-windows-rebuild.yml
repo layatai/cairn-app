@@ -1,0 +1,59 @@
+name: Temporary Cairn Windows rebuild
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout Cairn source
+        uses: actions/checkout@v4
+        with:
+          repository: layatai/gitui
+          ref: 264c71ab61023fa9c4278ab44bed72ffeb510a0b
+          ssh-key: ${{ secrets.CAIRN_BUILD_SSH_KEY }}
+          persist-credentials: false
+          path: source
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.0
+
+      - name: Install Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          cache-dependency-path: source/pnpm-lock.yaml
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Rust
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: source/src-tauri -> target
+
+      - name: Install dependencies
+        working-directory: source
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Windows installers
+        working-directory: source
+        run: pnpm tauri build
+
+      - name: Upload Windows installers
+        uses: actions/upload-artifact@v4
+        with:
+          name: cairn-windows-v0.6.41
+          retention-days: 1
+          if-no-files-found: error
+          path: |
+            source/src-tauri/target/release/bundle/msi/*.msi
+            source/src-tauri/target/release/bundle/nsis/*-setup.exe
