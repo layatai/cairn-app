@@ -1,0 +1,177 @@
+{
+  "minimumNodeMajor": 18,
+  "managedNodeVersion": "22.23.1",
+  "tools": [
+    {
+      "id": "node",
+      "command": "node",
+      "name": "Node.js setup runtime",
+      "category": "Setup runtime",
+      "required": false,
+      "versionArgs": ["--version"],
+      "fix": "Runs the terminal setup wizard. Existing compatible Node.js is always reused.",
+      "installer": {
+        "kind": "managed-node"
+      }
+    },
+    {
+      "id": "git",
+      "command": "git",
+      "name": "Git",
+      "category": "Essentials",
+      "required": true,
+      "versionArgs": ["--version"],
+      "fix": "Powers every repository operation.",
+      "installer": {
+        "kind": "system-package",
+        "macos": "git",
+        "windows": "Git.Git",
+        "linux": "git"
+      }
+    },
+    {
+      "id": "identity",
+      "name": "Git identity",
+      "category": "Essentials",
+      "required": true,
+      "fix": "Your name & email stamp every commit — set them above.",
+      "special": "git-identity"
+    },
+    {
+      "id": "claude",
+      "command": "claude",
+      "name": "Claude Code",
+      "category": "AI agents (optional)",
+      "required": false,
+      "versionArgs": ["--version"],
+      "fix": "Run this agent as a terminal session inside Cairn.",
+      "installer": {
+        "kind": "npm-global",
+        "package": "@anthropic-ai/claude-code"
+      }
+    },
+    {
+      "id": "codex",
+      "command": "codex",
+      "name": "OpenAI Codex",
+      "category": "AI agents (optional)",
+      "required": false,
+      "versionArgs": ["--version"],
+      "fix": "Run this agent as a terminal session inside Cairn.",
+      "installer": {
+        "kind": "npm-global",
+        "package": "@openai/codex"
+      }
+    },
+    {
+      "id": "gemini",
+      "command": "gemini",
+      "name": "Gemini CLI",
+      "category": "AI agents (optional)",
+      "required": false,
+      "versionArgs": ["--version"],
+      "fix": "Run this agent as a terminal session inside Cairn.",
+      "installer": {
+        "kind": "npm-global",
+        "package": "@google/gemini-cli"
+      }
+    },
+    {
+      "id": "opencode",
+      "command": "opencode",
+      "name": "opencode",
+      "category": "AI agents (optional)",
+      "required": false,
+      "versionArgs": ["--version"],
+      "fix": "Run this agent as a terminal session inside Cairn.",
+      "installer": {
+        "kind": "npm-global",
+        "package": "opencode-ai"
+      }
+    },
+    {
+      "id": "aider",
+      "command": "aider",
+      "name": "Aider",
+      "category": "AI agents (optional)",
+      "required": false,
+      "versionArgs": ["--version"],
+      "fix": "Run this agent as a terminal session inside Cairn.",
+      "installer": {
+        "kind": "aider"
+      }
+    },
+    {
+      "id": "gh",
+      "command": "gh",
+      "name": "GitHub CLI (gh)",
+      "category": "Integrations (optional)",
+      "required": false,
+      "versionArgs": ["--version"],
+      "fix": "Publish repositories and open issues on GitHub.",
+      "installer": {
+        "kind": "system-package",
+        "macos": "gh",
+        "windows": "GitHub.cli",
+        "linux": "gh"
+      }
+    },
+    {
+      "id": "glab",
+      "command": "glab",
+      "name": "GitLab CLI (glab)",
+      "category": "Integrations (optional)",
+      "required": false,
+      "versionArgs": ["--version"],
+      "fix": "Publish repositories and open issues on GitLab.",
+      "installer": {
+        "kind": "system-package",
+        "macos": "glab",
+        "windows": "GLab.GLab",
+        "linux": "glab"
+      }
+    },
+    {
+      "id": "code",
+      "command": "code",
+      "name": "VS Code `code` command",
+      "category": "Integrations (optional)",
+      "required": false,
+      "versionArgs": ["--version"],
+      "fix": "\"Open in VS Code\" from files and commits.",
+      "installer": {
+        "kind": "manual",
+        "macos": "In VS Code run: Cmd+Shift+P → \"Shell Command: Install 'code' command in PATH\"",
+        "windows": "Re-run the VS Code installer and enable \"Add to PATH\", then open a new terminal.",
+        "linux": "Install VS Code from your distribution package and ensure its `code` launcher is on PATH."
+      }
+    },
+    {
+      "id": "rg",
+      "command": "rg",
+      "name": "ripgrep (rg)",
+      "category": "Optional tools",
+      "required": false,
+      "versionArgs": ["--version"],
+      "fix": "Faster cross-project text search (falls back to git grep).",
+      "installer": {
+        "kind": "system-package",
+        "macos": "ripgrep",
+        "windows": "BurntSushi.ripgrep.MSVC",
+        "linux": "ripgrep"
+      }
+    },
+    {
+      "id": "git-filter-repo",
+      "command": "git-filter-repo",
+      "name": "git-filter-repo",
+      "category": "Optional tools",
+      "required": false,
+      "versionArgs": ["--version"],
+      "fix": "Required by the History Rewrite tools.",
+      "installer": {
+        "kind": "git-filter-repo"
+      }
+    }
+  ]
+}
