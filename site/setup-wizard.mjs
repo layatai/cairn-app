@@ -275,6 +275,9 @@ async function chooseTools(tools, yes) {
   const selected = tools.filter((tool) => tool.required);
   const optional = tools.filter((tool) => !tool.required);
   if (!optional.length) return selected;
+  if (!process.stdin.isTTY) {
+    throw new Error("interactive setup requires a terminal; rerun from Terminal or use --yes");
+  }
   const prompt = createInterface({ input: process.stdin, output: process.stdout });
   try {
     console.log("\nOptional tools");

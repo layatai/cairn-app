@@ -216,4 +216,8 @@ fi
 
 ARGS=(--catalog "$CATALOG")
 if [[ "$MODE" == all ]]; then ARGS+=(--all); else ARGS+=(--tool "$TOOL_ID"); fi
-"$NODE_BIN" "$WIZARD" "${ARGS[@]}"
+if [[ "$MODE" == all ]] && (tty -s </dev/tty) 2>/dev/null; then
+  "$NODE_BIN" "$WIZARD" "${ARGS[@]}" </dev/tty
+else
+  "$NODE_BIN" "$WIZARD" "${ARGS[@]}"
+fi
