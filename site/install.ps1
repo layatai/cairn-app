@@ -254,15 +254,17 @@ try {
     Expand-Archive -LiteralPath $Archive -DestinationPath $Extracted
     $TuiSource = Join-Path $Extracted "cairn.mjs"
     $HostSource = Join-Path $Extracted "cairn-terminal-host.exe"
-    foreach ($Required in @($TuiSource, $HostSource, (Join-Path $Extracted "VERSION"), (Join-Path $Extracted "PROTOCOL_VERSION"), (Join-Path $Extracted "PACKAGE"))) {
+    foreach ($Required in @($TuiSource, $HostSource, (Join-Path $Extracted "VERSION"), (Join-Path $Extracted "PROTOCOL_VERSION"), (Join-Path $Extracted "HOST_BUILD_ID"), (Join-Path $Extracted "PACKAGE"))) {
         if (-not (Test-Path -LiteralPath $Required -PathType Leaf)) { throw "Cairn package is missing $(Split-Path -Leaf $Required)." }
     }
     if ((Get-Content -LiteralPath $TuiSource -TotalCount 1) -ne '#!/usr/bin/env node') { throw "Invalid Cairn TUI executable." }
     $PackageVersion = (Get-Content -Raw -LiteralPath (Join-Path $Extracted "VERSION")).Trim()
     $ProtocolVersion = (Get-Content -Raw -LiteralPath (Join-Path $Extracted "PROTOCOL_VERSION")).Trim()
+    $HostBuildId = (Get-Content -Raw -LiteralPath (Join-Path $Extracted "HOST_BUILD_ID")).Trim()
     $PackageMarker = (Get-Content -Raw -LiteralPath (Join-Path $Extracted "PACKAGE")).Trim()
     if ($PackageVersion -notmatch '^\d+\.\d+\.\d+$') { throw "Invalid Cairn package version." }
     if ($ProtocolVersion -notmatch '^\d+$') { throw "Invalid terminal-host protocol version." }
+    if ($HostBuildId -notmatch '^[0-9a-f]{16}$') { throw "Invalid terminal-host build id." }
     if ($PackageMarker -ne "cairn-tui $PackageVersion windows $CairnArch") { throw "Incompatible Cairn package metadata: $PackageMarker" }
     if ($Version -ne "latest" -and $Version -ne "v$PackageVersion") { throw "Package version $PackageVersion does not match requested release $Version." }
 

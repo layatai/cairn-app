@@ -12,6 +12,7 @@ readonly PATH_MARKER_END="# <<< Cairn setup runtime PATH <<<"
 MODE=""
 TOOL_ID=""
 DRY_RUN="${CAIRN_SETUP_DRY_RUN:-0}"
+YES=0
 SETUP_BASE="${CAIRN_SETUP_BASE_URL:-$CAIRN_SETUP_BASE_DEFAULT}"
 NODE_BASE="${CAIRN_NODE_BASE_URL:-$CAIRN_NODE_BASE_DEFAULT}"
 TMP_DIR=""
@@ -39,8 +40,9 @@ while (($# > 0)); do
       shift 2
       ;;
     --dry-run) DRY_RUN=1; shift ;;
+    --yes) YES=1; shift ;;
     -h|--help)
-      printf 'Usage: setup.sh (--all | --tool <id>) [--dry-run]\n'
+      printf 'Usage: setup.sh (--all | --tool <id>) [--yes] [--dry-run]\n'
       exit 0
       ;;
     *) die "unknown argument: $1" ;;
@@ -216,6 +218,7 @@ fi
 
 ARGS=(--catalog "$CATALOG")
 if [[ "$MODE" == all ]]; then ARGS+=(--all); else ARGS+=(--tool "$TOOL_ID"); fi
+if [[ "$YES" == 1 ]]; then ARGS+=(--yes); fi
 if [[ "$MODE" == all ]] && (tty -s </dev/tty) 2>/dev/null; then
   "$NODE_BIN" "$WIZARD" "${ARGS[@]}" </dev/tty
 else

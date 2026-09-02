@@ -303,14 +303,16 @@ install_node() {
 }
 
 validate_cairn_package() {
-  local package_dir="$1" version protocol marker expected_marker
+  local package_dir="$1" version protocol build_id marker expected_marker
   [[ "$(head -n 1 "$package_dir/cairn.mjs" 2>/dev/null || true)" == '#!/usr/bin/env node' ]] || die "invalid Cairn TUI executable"
   [[ -f "$package_dir/cairn-terminal-host" ]] || die "Cairn terminal host is missing"
   version="$(tr -d '\r\n' < "$package_dir/VERSION" 2>/dev/null || true)"
   protocol="$(tr -d '\r\n' < "$package_dir/PROTOCOL_VERSION" 2>/dev/null || true)"
+  build_id="$(tr -d '\r\n' < "$package_dir/HOST_BUILD_ID" 2>/dev/null || true)"
   marker="$(tr -d '\r\n' < "$package_dir/PACKAGE" 2>/dev/null || true)"
   [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || die "invalid Cairn package version"
   [[ "$protocol" =~ ^[0-9]+$ ]] || die "invalid terminal-host protocol version"
+  [[ "$build_id" =~ ^[0-9a-f]{16}$ ]] || die "invalid terminal-host build id"
   expected_marker="cairn-tui $version $PLATFORM $CAIRN_ARCH"
   [[ "$marker" == "$expected_marker" ]] || die "incompatible Cairn package metadata: $marker"
   if [[ "$RELEASE_TAG" != latest && "$RELEASE_TAG" != "v$version" ]]; then

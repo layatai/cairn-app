@@ -2,6 +2,7 @@
 param(
     [switch]$All,
     [string]$Tool,
+    [switch]$Yes,
     [switch]$DryRun,
     [switch]$Help
 )
@@ -15,7 +16,7 @@ $ManagedNodeVersion = "22.23.1"
 $MinimumNodeMajor = 18
 
 if ($Help) {
-    Write-Host "Usage: setup.ps1 (-All | -Tool <id>) [-DryRun]"
+    Write-Host "Usage: setup.ps1 (-All | -Tool <id>) [-Yes] [-DryRun]"
     return
 }
 if (($All -and $Tool) -or (-not $All -and [string]::IsNullOrWhiteSpace($Tool))) {
@@ -195,6 +196,7 @@ try {
 
     $Arguments = @($Wizard, "--catalog", $Catalog)
     if ($All) { $Arguments += "--all" } else { $Arguments += @("--tool", $Tool) }
+    if ($Yes) { $Arguments += "--yes" }
     & $NodeExecutable @Arguments
     if ($LASTEXITCODE -ne 0) { throw "Cairn setup wizard exited with code $LASTEXITCODE." }
 } finally {

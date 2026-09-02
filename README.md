@@ -3,7 +3,7 @@
 <p align="center"><strong>A fast, cross-platform Git client with integrated terminals and AI coding-agent workflows.</strong></p>
 
 <p align="center">
-  <a href="https://github.com/layatai/cairn-app/releases/tag/v0.6.57"><strong>Download v0.6.57</strong></a>
+  <a href="https://github.com/layatai/cairn-app/releases/latest"><strong>Download latest</strong></a>
   · <a href="https://layatai.github.io/cairn-app/">Interactive tour</a>
   · <a href="https://github.com/layatai/cairn-app/releases">All releases</a>
 </p>
@@ -31,9 +31,8 @@ packages, Docker image, and the [Cairn website](https://layatai.github.io/cairn-
 
 ## Downloads
 
-> **Recommended:** [v0.6.57](https://github.com/layatai/cairn-app/releases/tag/v0.6.57)
-> is the newest release with the complete desktop and TUI asset set. v0.6.58
-> contains Windows TUI recovery assets only.
+> **Recommended:** use the [latest release](https://github.com/layatai/cairn-app/releases/latest),
+> published only after the complete desktop and TUI asset set passes release verification.
 
 | Product | Platform | Release asset | Notes |
 |---|---|---|---|
@@ -48,19 +47,19 @@ packages, Docker image, and the [Cairn website](https://layatai.github.io/cairn-
 
 ### macOS
 
-1. Download the universal DMG from [v0.6.57](https://github.com/layatai/cairn-app/releases/tag/v0.6.57).
+1. Download the universal DMG from the [latest release](https://github.com/layatai/cairn-app/releases/latest).
 2. Open it and drag **Cairn** into **Applications**.
 3. Launch Cairn normally. The app is signed and notarized by Apple.
 
 ### Linux
 
-Download the AppImage, Debian package, or RPM for your architecture from
-[v0.6.57](https://github.com/layatai/cairn-app/releases/tag/v0.6.57).
+Download the AppImage, Debian package, or RPM for your architecture from the
+[latest release](https://github.com/layatai/cairn-app/releases/latest).
 
 ### Windows
 
 Download either the setup executable or MSI from the
-[v0.6.57 release](https://github.com/layatai/cairn-app/releases/tag/v0.6.57). If
+[latest release](https://github.com/layatai/cairn-app/releases/latest). If
 SmartScreen appears, choose **More info → Run anyway**.
 
 ## Install the standalone TUI
@@ -72,17 +71,17 @@ runtime and Git when needed, verify release checksums, and are safe to rerun.
 ### macOS, Linux, or WSL2
 
 ```bash
-curl -fsSL --proto '=https' --tlsv1.2 https://layatai.github.io/cairn-app/install.sh | CAIRN_VERSION=v0.6.57 bash
+curl -fsSL --proto '=https' --tlsv1.2 https://layatai.github.io/cairn-app/install.sh | bash
 ```
 
 ### Windows PowerShell
 
 ```powershell
-$env:CAIRN_VERSION='v0.6.57'; iwr -useb https://layatai.github.io/cairn-app/install.ps1 | iex
+iwr -useb https://layatai.github.io/cairn-app/install.ps1 | iex
 ```
 
 Standalone package hashes are published in
-[`cairn-tui-checksums.txt`](https://github.com/layatai/cairn-app/releases/download/v0.6.57/cairn-tui-checksums.txt).
+[`cairn-tui-checksums.txt`](https://github.com/layatai/cairn-app/releases/latest/download/cairn-tui-checksums.txt).
 Run `cairn` inside any Git repository. `Ctrl+]` detaches from a live session;
 running `cairn` again reconnects to it.
 
@@ -130,8 +129,7 @@ Use a TLS reverse proxy before exposing Cairn beyond localhost. The immutable
 
 ## Integrity
 
-- The macOS v0.6.57 DMG SHA-256 is
-  `96d50910db9076abbe82aab97ee64123c2fa7afbd4f8d076caf3e51ebb2c230d`.
+- Every macOS release records its notarized DMG SHA-256 in the release notes.
 - Standalone TUI checksums are shipped with every release and verified by the
   installation scripts.
 
