@@ -17,9 +17,13 @@ packages, Docker image, and the [Cairn website](https://layatai.github.io/cairn-
 
 ## Screenshots
 
-### Desktop app
+### Desktop app — macOS
 
 ![Cairn desktop app with terminal sessions, repository history, working tree, and diff preview](site/screenshot.png)
+
+### Desktop app — Linux (Omarchy)
+
+![Cairn desktop app on Omarchy Linux showing repository history, commit details, and diff review](site/screenshots/linux-omarchy.jpg)
 
 ### Standalone TUI
 
