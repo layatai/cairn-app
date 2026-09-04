@@ -104,10 +104,22 @@ function Get-ExpectedChecksum {
     throw "Checksum for $FileName is missing."
 }
 
+function Get-Sha256 {
+    param([string]$File)
+    $Stream = [IO.File]::OpenRead($File)
+    $Hasher = [Security.Cryptography.SHA256]::Create()
+    try {
+        return ([BitConverter]::ToString($Hasher.ComputeHash($Stream))).Replace("-", "").ToLowerInvariant()
+    } finally {
+        $Hasher.Dispose()
+        $Stream.Dispose()
+    }
+}
+
 function Assert-Checksum {
     param([string]$File, [string]$Manifest, [string]$FileName)
     $Expected = Get-ExpectedChecksum -Manifest $Manifest -FileName $FileName
-    $Actual = (Get-FileHash -Algorithm SHA256 -LiteralPath $File).Hash.ToLowerInvariant()
+    $Actual = Get-Sha256 -File $File
     if ($Expected -ne $Actual) { throw "Checksum mismatch for $FileName." }
 }
 
