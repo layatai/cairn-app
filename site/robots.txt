@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://layatai.github.io/gitui-app/sitemap.xml
+Sitemap: https://layatai.github.io/cairn-app/sitemap.xml
