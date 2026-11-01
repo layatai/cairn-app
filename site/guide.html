@@ -1,0 +1,501 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Cairn Guide — how to use every feature</title>
+<meta name="description" content="Step-by-step instructions for every Cairn feature: history graph, line staging, commits, smart pull and sync, interactive rebase, conflict solving, AI code review, agent chat, terminals, tasks, and the terminal UI." />
+<link rel="canonical" href="https://layatai.github.io/cairn-app/guide.html" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Cairn Guide — how to use every feature" />
+<meta property="og:description" content="From your first clone to AI review before the PR — every Cairn workflow, step by step, with screenshots." />
+<meta property="og:image" content="https://layatai.github.io/cairn-app/screenshots/workspace.jpg" />
+<meta property="og:url" content="https://layatai.github.io/cairn-app/guide.html" />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235fd08a' stroke-width='2.4'%3E%3Ccircle cx='6' cy='6' r='2.4'/%3E%3Ccircle cx='6' cy='18' r='2.4'/%3E%3Ccircle cx='18' cy='12' r='2.4'/%3E%3Cpath d='M6 8.4v7.2M8.4 18H12a4 4 0 0 0 4-4'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  /* Moss — the same tokens as the app's Moss theme (src/themeMinimal.css). */
+  :root {
+    --bg: #1e221c;
+    --surface: #262c24;
+    --surface-2: #323a2e;
+    --surface-3: #414b3a;
+    --border: #3c4636;
+    --border-strong: #829175;
+    --ink: #f0f3e8;
+    --ink-2: #ccd3c1;
+    --ink-3: #adb89e;
+    --accent: #5fd08a;
+    --accent-contrast: #0b140c;
+    --accent-bg: color-mix(in oklch, var(--accent) 18%, var(--surface));
+    --accent-ink: color-mix(in oklch, var(--accent) 55%, white);
+    --font-ui: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.6 var(--font-ui); -webkit-font-smoothing: antialiased; }
+  a { color: var(--accent-ink); }
+  code, kbd { font-family: var(--font-mono); font-size: .86em; }
+  kbd { background: var(--surface-2); border: 1px solid var(--border); border-bottom-width: 2px; border-radius: 5px; padding: 1px 6px; color: var(--ink); white-space: nowrap; }
+  code { background: var(--surface-2); border-radius: 4px; padding: 1px 5px; }
+  .ui { color: var(--ink); font-weight: 600; }
+
+  .site-nav { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 24px; background: color-mix(in oklch, var(--bg) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); }
+  .site-nav a { text-decoration: none; }
+  .brand { display: inline-flex; align-items: center; gap: 9px; color: var(--ink); font-weight: 700; font-size: 16px; }
+  .brand .mk { width: 26px; height: 26px; border-radius: 7px; background: var(--accent); display: grid; place-items: center; }
+  .brand .mk svg { width: 16px; height: 16px; }
+  .nav-actions { display: flex; align-items: center; gap: 18px; }
+  .nav-link { color: var(--ink-2); font-size: 14px; font-weight: 500; }
+  .nav-link:hover { color: var(--ink); }
+  .nav-dl { background: var(--accent); color: var(--accent-contrast); font-weight: 600; font-size: 14px; padding: 8px 15px; border-radius: 9px; }
+
+  .hero { max-width: 1160px; margin: 0 auto; padding: 64px 24px 28px; }
+  .eyebrow { font-family: var(--font-mono); font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); }
+  .hero h1 { font-size: clamp(32px, 5vw, 48px); line-height: 1.08; letter-spacing: -1.2px; margin: 10px 0 14px; }
+  .hero p { color: var(--ink-2); font-size: 17px; max-width: 680px; margin: 0; }
+
+  .layout { max-width: 1160px; margin: 0 auto; padding: 24px 24px 80px; display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 48px; }
+  .toc { position: sticky; top: 84px; align-self: start; max-height: calc(100vh - 100px); overflow: auto; font-size: 13.5px; }
+  .toc h2 { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--ink-3); margin: 0 0 10px; font-family: var(--font-mono); font-weight: 500; }
+  .toc ol { list-style: none; margin: 0; padding: 0; counter-reset: toc; }
+  .toc li { counter-increment: toc; }
+  .toc a { display: block; padding: 5px 10px; border-left: 2px solid var(--border); color: var(--ink-2); text-decoration: none; }
+  .toc a::before { content: counter(toc, decimal-leading-zero) "  "; font-family: var(--font-mono); font-size: 11px; color: var(--ink-3); }
+  .toc a:hover, .toc a.on { color: var(--ink); border-left-color: var(--accent); background: var(--surface); }
+
+  .chapter { padding: 8px 0 44px; margin-bottom: 44px; border-bottom: 1px solid var(--border); }
+  .chapter:last-of-type { border-bottom: 0; }
+  .chapter .k { font-family: var(--font-mono); font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); }
+  .chapter h2 { font-size: 28px; letter-spacing: -.6px; line-height: 1.2; margin: 6px 0 10px; }
+  .chapter h3 { font-size: 17px; margin: 28px 0 8px; letter-spacing: -.2px; }
+  .chapter > p, .chapter li { color: var(--ink-2); }
+  .lede { font-size: 16.5px; margin: 0 0 18px; }
+  ol.steps { padding-left: 0; list-style: none; counter-reset: s; margin: 12px 0; }
+  ol.steps > li { counter-increment: s; position: relative; padding: 0 0 10px 38px; }
+  ol.steps > li::before { content: counter(s); position: absolute; left: 0; top: 1px; width: 24px; height: 24px; border-radius: 50%; background: var(--accent-bg); color: var(--accent-ink); font: 600 12px/24px var(--font-mono); text-align: center; }
+  ul.tight { padding-left: 20px; margin: 10px 0; }
+  ul.tight li { margin-bottom: 6px; }
+
+  figure { margin: 22px 0; }
+  figure img { display: block; width: 100%; height: auto; border-radius: 12px; border: 1px solid var(--border); background: var(--surface); box-shadow: 0 24px 60px -30px rgba(0,0,0,.7); }
+  figure.narrow img { max-width: 420px; }
+  figure.mid img { max-width: 720px; }
+  figcaption { color: var(--ink-3); font-size: 13px; margin-top: 8px; }
+
+  .tip { display: flex; gap: 12px; background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 10px; padding: 12px 14px; margin: 18px 0; font-size: 14px; color: var(--ink-2); }
+  .tip b { color: var(--accent); font-family: var(--font-mono); font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; padding-top: 3px; white-space: nowrap; }
+
+  table.keys { width: 100%; border-collapse: collapse; font-size: 14px; margin: 12px 0; }
+  table.keys td { padding: 8px 10px; border-bottom: 1px solid var(--border); color: var(--ink-2); vertical-align: top; }
+  table.keys td:first-child { width: 42%; }
+
+  .cta { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 28px; text-align: center; }
+  .cta h2 { margin-top: 0; }
+  .pill { display: inline-block; padding: 11px 20px; border-radius: 10px; font-weight: 600; text-decoration: none; margin: 6px; }
+  .pill.primary { background: var(--accent); color: var(--accent-contrast); }
+  .pill.ghost { border: 1px solid var(--border-strong); color: var(--ink); }
+  footer { max-width: 1160px; margin: 0 auto; padding: 0 24px 40px; color: var(--ink-3); font-size: 13px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  footer a { color: var(--ink-2); }
+
+  @media (max-width: 860px) {
+    .layout { grid-template-columns: 1fr; gap: 8px; padding: 8px 16px 64px; }
+    .hero { padding: 40px 16px 16px; }
+    .site-nav { padding: 12px 16px; }
+    .nav-link.hide-sm { display: none; }
+    .toc { position: static; max-height: none; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px; }
+    .toc ol { columns: 2; column-gap: 12px; }
+    .toc a { border-left: 0; padding: 4px 0; }
+    .chapter h2 { font-size: 24px; }
+    figure.narrow img, figure.mid img { max-width: 100%; }
+    table.keys td:first-child { width: 48%; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <a class="brand" href="./">
+    <span class="mk"><svg viewBox="0 0 24 24" fill="none" stroke="#0b140c" stroke-width="2.4"><circle cx="6" cy="6" r="2.4"/><circle cx="6" cy="18" r="2.4"/><circle cx="18" cy="12" r="2.4"/><path d="M6 8.4v7.2M8.4 18H12a4 4 0 0 0 4-4"/></svg></span>
+    Cairn
+  </a>
+  <div class="nav-actions">
+    <a class="nav-link hide-sm" href="./">Home</a>
+    <a class="nav-link hide-sm" href="https://github.com/layatai/cairn-app" target="_blank" rel="noopener">GitHub</a>
+    <a class="nav-dl" href="https://github.com/layatai/cairn-app/releases/latest" target="_blank" rel="noopener">↓ Download</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="eyebrow">Cairn guide</div>
+  <h1>Every feature, step by step.</h1>
+  <p>From your first clone to AI review before the pull request, every Cairn workflow is here with the exact clicks and keys. Screenshots use the Moss theme.</p>
+</header>
+
+<div class="layout">
+  <nav class="toc" aria-label="Guide contents">
+    <h2>Contents</h2>
+    <ol>
+      <li><a href="#start">Get started</a></li>
+      <li><a href="#workbench">The workbench</a></li>
+      <li><a href="#history">History &amp; graph</a></li>
+      <li><a href="#diffs">Diffs &amp; blame</a></li>
+      <li><a href="#commit">Stage &amp; commit</a></li>
+      <li><a href="#branches">Branches &amp; tags</a></li>
+      <li><a href="#sync">Fetch, pull &amp; push</a></li>
+      <li><a href="#rewrite">Rewrite history</a></li>
+      <li><a href="#conflicts">Solve conflicts</a></li>
+      <li><a href="#stash">Stash</a></li>
+      <li><a href="#worktrees">Worktrees &amp; submodules</a></li>
+      <li><a href="#review">AI code review</a></li>
+      <li><a href="#chat">Agent chat</a></li>
+      <li><a href="#terminal">Terminals &amp; agents</a></li>
+      <li><a href="#search">Search &amp; snippets</a></li>
+      <li><a href="#tasks">Tasks &amp; CI</a></li>
+      <li><a href="#remote">Phone, Telegram &amp; web</a></li>
+      <li><a href="#tui">Terminal UI</a></li>
+      <li><a href="#settings">Settings &amp; themes</a></li>
+      <li><a href="#keys">Keyboard shortcuts</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <section class="chapter" id="start">
+      <span class="k">01 · Get started</span>
+      <h2>From download to your first repository</h2>
+      <p class="lede">Cairn runs locally and has no account to create. It uses the <code>git</code> already on your machine, so your SSH keys, credential helpers and <code>~/.ssh/config</code> work as they do in your terminal.</p>
+      <ol class="steps">
+        <li>Download Cairn for macOS (signed and notarized DMG) or Windows from <a href="https://github.com/layatai/cairn-app/releases/latest" target="_blank" rel="noopener">Releases</a>. On Windows, if SmartScreen warns you, click <span class="ui">More info → Run anyway</span>.</li>
+        <li>On first launch, the <span class="ui">Welcome</span> tab offers <span class="ui">Open</span>, <span class="ui">Clone</span> and <span class="ui">Init</span>, plus a list of recent repositories.</li>
+        <li>Run <span class="ui">Setup Wizard…</span> from Welcome or the command palette (<kbd>⌘⇧P</kbd>). It checks Git, the agent CLIs (Claude Code, Codex, Gemini, opencode, aider), <code>gh</code>/<code>glab</code> and your editor, and tells you how to install anything missing.</li>
+        <li>Open an existing repository with <kbd>⌘O</kbd>, or run <span class="ui">Clone Repository…</span>. Clone names the subfolder from the URL, and you can edit it. For a private HTTPS repository with no cached credentials, Cairn asks for a username and token.</li>
+      </ol>
+      <div class="tip"><b>Tip</b><span>Turn off "show on startup" on the Welcome screen to reopen your most recent repository automatically. <span class="ui">Layout: Show Welcome / Setup</span> in the palette brings it back.</span></div>
+    </section>
+
+    <section class="chapter" id="workbench">
+      <span class="k">02 · The workbench</span>
+      <h2>One window for the whole repository</h2>
+      <p class="lede">The repository navigator is on the left, history and preview are in the centre, and working changes are on the right. The toolbar holds <span class="ui">Fetch</span>, <span class="ui">Pull</span>, <span class="ui">Push</span>, <span class="ui">Branch</span> and <span class="ui">Stash</span>.</p>
+      <figure>
+        <img src="screenshots/workspace.jpg" width="1600" height="1000" alt="Cairn workbench: branch list on the left, commit history and file preview in the centre, working changes on the right" loading="lazy" decoding="async" />
+        <figcaption>The standard workspace. Each pane is a tab that can be moved, split or maximized.</figcaption>
+      </figure>
+      <ul class="tight">
+        <li><strong>Rearrange panes</strong> by dragging a tab into another group or to an edge. Drag a divider to resize a pane; sizes are saved.</li>
+        <li><strong>Switch workspaces</strong> with <kbd>⌘⇧1</kbd> (Standard), <kbd>⌘⇧2</kbd> (Log) and <kbd>⌘⇧3</kbd> (Working Tree).</li>
+        <li><strong>Save a layout</strong> with <span class="ui">Layout: Save Current Layout…</span>. Saved layouts can be restored or removed later. <span class="ui">Layout: Reset Workbench</span> returns to the default.</li>
+        <li><strong>Reopen a closed pane</strong> with the <span class="ui">Layout: Show …</span> commands for Repository Navigator, History, Preview, Commit / Working Changes, Code Review, CI and Tasks.</li>
+        <li><strong>Work on several repositories</strong> from the title-bar tabs. Each repository keeps its own panes and terminals.</li>
+      </ul>
+    </section>
+
+    <section class="chapter" id="history">
+      <span class="k">03 · History &amp; graph</span>
+      <h2>Read the whole repository at a glance</h2>
+      <p class="lede">The graph colours each lane and marks HEAD, branches, remotes, tags and stashes on their commits. Uncommitted work appears as a <span class="ui">Working Directory</span> row at the top. Large repositories load in pages.</p>
+      <figure class="mid">
+        <img src="screenshots/history-graph.jpg" width="1600" height="1518" alt="Commit graph with coloured lanes, conventional-commit types, authors, dates and short SHAs" loading="lazy" decoding="async" />
+        <figcaption>Conventional-commit prefixes such as <code>feat:</code> and <code>fix:</code> are coloured by type.</figcaption>
+      </figure>
+      <ol class="steps">
+        <li>Click a commit to see its details and changed files. Move through the history with <kbd>↑</kbd> and <kbd>↓</kbd>.</li>
+        <li>Press <kbd>⌘F</kbd> to filter by author, message or path, or limit the graph to one branch.</li>
+        <li>Right-click a commit to check it out, cherry-pick it, revert it, split it, move it to another branch, create a tag or copy its SHA.</li>
+        <li>Each commit shows whether it is pushed or still only local. Filter to pending commits to see exactly what a push will send.</li>
+      </ol>
+      <h3>Find lost work</h3>
+      <p><span class="ui">Reflog…</span> lists every position HEAD has been at, so you can recover a commit after a reset or a deleted branch. <span class="ui">Bisect…</span> walks you through marking commits good or bad until Git finds the one that introduced a bug.</p>
+    </section>
+
+    <section class="chapter" id="diffs">
+      <span class="k">04 · Diffs &amp; blame</span>
+      <h2>Diffs that stay fast on large files</h2>
+      <p class="lede">Choose unified, side-by-side or whole-file view from the diff header. Syntax highlighting, change markers on the scrollbar and next/previous navigation work in all three.</p>
+      <figure>
+        <img src="screenshots/diff-split.jpg" width="1600" height="746" alt="Side-by-side diff with the diff toolbar: layout, wrap, change navigation, file navigation and Review all" loading="lazy" decoding="async" />
+        <figcaption>Side-by-side view. Use the toolbar arrows to jump between changes and between files.</figcaption>
+      </figure>
+      <ul class="tight">
+        <li><strong>Wrap long lines</strong> with the wrap button. The setting is remembered.</li>
+        <li><strong>Inline blame</strong> (<span class="ui">Diff: Toggle Inline Blame</span>) shows the author, age and commit message of the line under your cursor.</li>
+        <li><strong>Review all</strong> shows every changed file in one scroll, like a pull request.</li>
+        <li><strong>Images</strong> open in an image diff with 2-up, Swipe and Onion skin modes, plus zoom and pan.</li>
+      </ul>
+    </section>
+
+    <section class="chapter" id="commit">
+      <span class="k">05 · Stage &amp; commit</span>
+      <h2>Commit exactly what you mean</h2>
+      <p class="lede">The Working Changes pane lists staged and unstaged files as a tree. Stage a file, a folder, a hunk or several selected files at once.</p>
+      <figure class="narrow">
+        <img src="screenshots/commit.jpg" width="1600" height="590" alt="Commit composer with worktree picker, staged files, commit message box, Commit button, Options and Generate" loading="lazy" decoding="async" />
+        <figcaption>The commit composer. <span class="ui">Generate</span> drafts a message from your staged changes.</figcaption>
+      </figure>
+      <ol class="steps">
+        <li>Click a changed file to open its diff, then stage the hunks you want. Use <kbd>⌘</kbd>-click or <kbd>⇧</kbd>-click to select several files and stage, unstage or discard them together.</li>
+        <li>Type a message and press <kbd>⌘↩</kbd>. You can also reuse a recent message, or click <span class="ui">Generate</span> to have your agent draft one.</li>
+        <li>Use <span class="ui">Options</span> or the dropdown next to <span class="ui">Commit</span> to amend the last commit. <span class="ui">Undo Last Commit</span> puts the changes back in your working tree.</li>
+        <li>To throw away a change, use the discard button on the row or the context menu. Right-click a file or folder to add it to <code>.gitignore</code>.</li>
+      </ol>
+      <div class="tip"><b>Tip</b><span>Drop files from Finder or Explorer onto the window to copy them into the working tree.</span></div>
+    </section>
+
+    <section class="chapter" id="branches">
+      <span class="k">06 · Branches &amp; tags</span>
+      <h2>Branch without leaving your flow</h2>
+      <ol class="steps">
+        <li>Press <kbd>⌘B</kbd> or click <span class="ui">Branch</span> to create a branch. Rename, delete, merge or set an upstream from the branch's right-click menu.</li>
+        <li>Double-click a branch to check it out. Cairn shows a plan first. If your local changes conflict, it stashes them and offers <span class="ui">Resolve conflicts</span> or <span class="ui">Keep stashed</span>, so no work is lost.</li>
+        <li>Drag a branch or tag onto a commit to move it there. Cairn asks you to confirm, and the context menu offers the same action.</li>
+        <li>Create annotated or lightweight tags with <span class="ui">Create Tag…</span>, and push them from the remote's menu.</li>
+        <li>For a repository on GitHub or GitLab, the branch's right-click menu can open a pull or merge request form on the provider's site with the branch already filled in.</li>
+      </ol>
+      <figure>
+        <img src="screenshots/checkout-conflicts.jpg" width="1600" height="1066" alt="Checkout complete dialog: local changes conflict in three files, saved in a stash, with Keep stashed and Resolve conflicts buttons" loading="lazy" decoding="async" />
+        <figcaption>A checkout that would have overwritten your edits saves them to a stash first.</figcaption>
+      </figure>
+    </section>
+
+    <section class="chapter" id="sync">
+      <span class="k">07 · Fetch, pull &amp; push</span>
+      <h2>Sync in one click, with recovery built in</h2>
+      <p class="lede">Simple operations, such as a fast-forward pull on a clean tree, run inline with a progress bar. Riskier ones show a plan you confirm, and Cairn offers a recovery path if anything fails.</p>
+      <figure>
+        <img src="screenshots/workflow.jpg" width="1600" height="1066" alt="Inline progress banner reading Pull origin/main, Updating the clean working tree, above the commit list" loading="lazy" decoding="async" />
+        <figcaption>A clean pull runs inline, with no dialog.</figcaption>
+      </figure>
+      <ul class="tight">
+        <li><strong>Fetch</strong> one remote or all of them, with prune and tags. Defaults are saved per repository.</li>
+        <li><strong>Pull</strong> by merge, rebase or fast-forward only. <span class="ui">Smart Pull…</span> stashes local changes, pulls and then restores them.</li>
+        <li><strong>Sync Current Branch…</strong> pulls and then pushes in one step.</li>
+        <li><strong>Push</strong> normally, with force-with-lease, or with force. You can also push tags or delete a remote branch.</li>
+        <li><strong>Remotes</strong> can be added, renamed, edited (including a separate push URL) and pruned from the navigator.</li>
+      </ul>
+      <div class="tip"><b>Note</b><span>The first time you connect to a new SSH host, Cairn shows its key fingerprints and asks you to trust it, so the operation doesn't fail with "Host key verification failed".</span></div>
+    </section>
+
+    <section class="chapter" id="rewrite">
+      <span class="k">08 · Rewrite history</span>
+      <h2>Clean up commits before anyone sees them</h2>
+      <p class="lede">Open <span class="ui">History Rewrite Studio…</span> from the palette or the navigator's <span class="ui">Tools</span> section. You can pick, reword, squash, fixup, drop and reorder commits in one place.</p>
+      <ol class="steps">
+        <li>Choose the commit range to edit.</li>
+        <li>Set an action for each commit, and move commits up or down to reorder them.</li>
+        <li>Review the plan and apply it. If any step conflicts, Cairn cancels the whole rewrite and leaves your branch where it was.</li>
+      </ol>
+      <p>Some edits are quicker from a commit's right-click menu: <span class="ui">Split This Commit…</span> (by files, including older commits), <span class="ui">Move This Commit to Branch…</span>, <span class="ui">Cherry-pick Onto HEAD…</span> and <span class="ui">Revert This Commit…</span>. For a soft, mixed or hard reset, right-click the target commit.</p>
+    </section>
+
+    <section class="chapter" id="conflicts">
+      <span class="k">09 · Solve conflicts</span>
+      <h2>A three-way solver that does the easy part for you</h2>
+      <p class="lede">When a merge, rebase, cherry-pick or pull hits a conflict, the Conflict Solver opens with ours, the result and theirs side by side. Changes that don't conflict are applied for you.</p>
+      <ol class="steps">
+        <li>Jump between conflicts with <kbd>[</kbd> and <kbd>]</kbd>, or by clicking the overview ruler.</li>
+        <li>Take a side: <kbd>⌘←</kbd> for left, <kbd>⌘→</kbd> for right, <kbd>⌘⌫</kbd> to ignore. Each choice moves to the next conflict. You can also take both sides, or double-click a block to edit it.</li>
+        <li>Click <span class="ui">Resolve simple conflicts</span> to merge blocks where the two sides changed different lines.</li>
+        <li>Save. Cairn stages the file and opens the next one. When every file is resolved, the footer offers the next step: commit the merge, or continue or abort the rebase.</li>
+      </ol>
+      <div class="tip"><b>Tip</b><span>Undo and redo work per decision. Switch to <span class="ui">Whole file</span> to read the full file instead of only the changed sections.</span></div>
+    </section>
+
+    <section class="chapter" id="stash">
+      <span class="k">10 · Stash</span>
+      <h2>Park work in seconds</h2>
+      <ol class="steps">
+        <li>Click <span class="ui">Stash</span> in the toolbar, or run <span class="ui">Stash Changes…</span>. You can include untracked files.</li>
+        <li>Stashes appear in the navigator and as badges in the graph on the commit they were based on.</li>
+        <li>Right-click a stash to <span class="ui">Show Stash Changes</span>, <span class="ui">Apply Stash</span>, <span class="ui">Pop Stash</span>, <span class="ui">Rename Stash</span> or <span class="ui">Drop Stash</span>, or to compare it with the selected commit.</li>
+      </ol>
+    </section>
+
+    <section class="chapter" id="worktrees">
+      <span class="k">11 · Worktrees &amp; submodules</span>
+      <h2>Several branches checked out at once</h2>
+      <ol class="steps">
+        <li>Open <span class="ui">Worktrees…</span> to list, add or remove linked worktrees. You can select several to remove or clean up together.</li>
+        <li>The <span class="ui">Worktree</span> picker at the top of Working Changes switches which checkout you're committing in.</li>
+        <li>Submodules appear with their status. Init, update, sync or add one from the navigator. A new submodule is staged, not committed.</li>
+      </ol>
+      <p>When an agent runs in a <em>managed workspace</em>, Cairn creates a separate worktree for it. Where the filesystem supports copy-on-write it seeds the worktree that way, so the agent's edits don't touch your checkout.</p>
+    </section>
+
+    <section class="chapter" id="review">
+      <span class="k">12 · AI code review</span>
+      <h2>Get a review before you open the PR</h2>
+      <p class="lede">Cairn reviews your working changes, staged changes, branch or a single commit with the agent CLI you already use. The review runs on your machine. The only network traffic is between that CLI and your AI provider.</p>
+      <figure>
+        <img src="screenshots/code-review-settings.jpg" width="1600" height="1222" alt="Settings, Code Review: review agent set to Codex with native local review, and an editable box for additional repository review instructions" loading="lazy" decoding="async" />
+        <figcaption>Settings → Code Review: choose the review agent and add guidance for this repository.</figcaption>
+      </figure>
+      <ol class="steps">
+        <li>Open <span class="ui">Settings → Code Review</span> and pick a <span class="ui">Review agent</span>. Codex and Claude run their built-in local reviewer where available; other agents use a review prompt.</li>
+        <li>Optionally add <span class="ui">Additional review instructions</span>, for example "Focus on security and migrations." They are saved in the repository and apply to every review.</li>
+        <li>Run <span class="ui">AI Code Review…</span> and choose what to review: working changes, staged changes, the branch, or one commit.</li>
+        <li>Findings appear in the Code Review pane. Open one to jump to the line, or send it to the agent to fix.</li>
+      </ol>
+    </section>
+
+    <section class="chapter" id="chat">
+      <span class="k">13 · Agent chat</span>
+      <h2>Talk to your agent beside your code</h2>
+      <p class="lede">Agent Chat connects to Claude Code, Codex and other agents over ACP. Each chat belongs to a repository and is kept between sessions.</p>
+      <figure>
+        <img src="screenshots/agent-chat.jpg" width="1600" height="1047" alt="Agent chat: list of chats on the left, a running conversation with a collapsed tool step, and a composer with an image attachment" loading="lazy" decoding="async" />
+        <figcaption>Chats on the left, the transcript in the middle, the composer at the bottom.</figcaption>
+      </figure>
+      <ul class="tight">
+        <li><strong>Start a chat</strong> with <span class="ui">New chat</span>, then choose the agent and model before you send.</li>
+        <li><strong>Type <code>/</code></strong> to list the agent's commands, or <strong><code>$</code></strong> to insert a skill from your project's or home <code>.agents</code>, <code>.codex</code> or <code>.claude</code> folder.</li>
+        <li><strong>Attach files</strong> by pasting an image or dropping files on the composer. Click an attached image to mark it up before you send.</li>
+        <li><strong>Press <kbd>Esc</kbd></strong> to stop a turn. Drafts are kept, and you can keep typing while the agent works.</li>
+        <li><strong>Retry or edit</strong> any of your messages from the transcript. Tool activity is grouped into collapsible steps.</li>
+      </ul>
+      <figure class="narrow">
+        <img src="screenshots/agents.jpg" width="933" height="1600" alt="Agents pane listing threads from Codex and Claude Code with search, location filter and timestamps" loading="lazy" decoding="async" />
+        <figcaption>The Agents pane lists past Codex and Claude Code threads across projects, so you can reopen any of them.</figcaption>
+      </figure>
+    </section>
+
+    <section class="chapter" id="terminal">
+      <span class="k">14 · Terminals &amp; agents</span>
+      <h2>Agents run in tabs that tell you when they need you</h2>
+      <p class="lede">Toggle the terminal panel with <kbd>⌃`</kbd>. A background process keeps each session running, so terminals survive closing or reloading the window.</p>
+      <figure>
+        <img src="screenshots/terminal.jpg" width="1600" height="1066" alt="Terminal panel with a vertical tab rail showing a Codex agent session and a finished build, next to test output" loading="lazy" decoding="async" />
+        <figcaption>Agent tabs take the agent's own task name. A dot marks finished work you haven't looked at.</figcaption>
+      </figure>
+      <ul class="tight">
+        <li><strong>Get notified.</strong> When an agent finishes a turn or rings the bell, its tab lights up and you get a desktop notification. <kbd>⌘⇧U</kbd> jumps to the agent that needs you.</li>
+        <li><strong>Hand it context.</strong> Drag a file onto the terminal, or paste a screenshot, to give its path to Claude or another agent.</li>
+        <li><strong>Organize tabs.</strong> Drag to reorder. Drag a tab into the terminal body to split it beside another. Right-click to change a tab's colour. Switch between top tabs and a side rail with <span class="ui">Terminal: Toggle Session Tabs Side/Top</span>.</li>
+        <li><strong>Start anywhere.</strong> The <span class="ui">+</span> menu opens a shell in any recent project without switching repositories.</li>
+        <li><strong>Run configs.</strong> Run <code>launch.json</code>, <code>tasks.json</code> and <code>package.json</code> scripts from the toolbar's run button.</li>
+      </ul>
+    </section>
+
+    <section class="chapter" id="search">
+      <span class="k">15 · Search &amp; snippets</span>
+      <h2>Find anything, then hand it to an agent</h2>
+      <ul class="tight">
+        <li><kbd>⌘P</kbd> searches file names, <kbd>⌘⇧F</kbd> searches file contents (powered by ripgrep) and <kbd>⌘T</kbd> searches symbols. Press <kbd>Tab</kbd> to switch between them. Search covers the current repository by default; select other open repositories to include them.</li>
+        <li>Toggle case (<kbd>⌥C</kbd>), whole word (<kbd>⌥W</kbd>) and regex (<kbd>⌥R</kbd>). A highlighted preview opens at the matching line.</li>
+        <li><kbd>⌘⇧P</kbd> opens the command palette, which lists every action in Cairn.</li>
+        <li><kbd>⌘⇧L</kbd> opens <span class="ui">Prompt Snippets</span>, a library of reusable agent prompts. Fuzzy search tolerates typos, and <kbd>↩</kbd> inserts the snippet into the active agent.</li>
+        <li>Snippets can include fields such as <code>{{name:Label|default}}</code>, which you fill in before inserting, and built-in values such as <code>{{branch}}</code>, <code>{{repo}}</code> and <code>{{clipboard}}</code>.</li>
+        <li>Select text in a terminal and press <kbd>⌘⇧S</kbd> to save it as a snippet. Move your library between machines with the CSV export and import.</li>
+      </ul>
+    </section>
+
+    <section class="chapter" id="tasks">
+      <span class="k">16 · Tasks &amp; CI</span>
+      <h2>Your issues and checks, next to the code</h2>
+      <p class="lede">The Tasks pane brings GitHub issues and Jira tickets into one sortable list. The CI pane shows GitHub Actions checks for the current branch.</p>
+      <figure>
+        <img src="screenshots/tasks.jpg" width="1600" height="1000" alt="Tasks pane listing Jira and GitHub issues with status, priority, assignee, updated date and a Start button" loading="lazy" decoding="async" />
+        <figcaption>Filter by provider, Assigned, Reported, tags or sprint. <span class="ui">Start</span> begins work on an issue.</figcaption>
+      </figure>
+      <ol class="steps">
+        <li>Connect sources in <span class="ui">Settings → Tasks</span>. You can add several Jira sites; tokens are stored in your OS keychain.</li>
+        <li>Open the pane with <span class="ui">Layout: Show Tasks</span>. Filter by provider, status, tags and sprint or milestone.</li>
+        <li>For CI, sign in to the <code>gh</code> CLI. <span class="ui">Layout: Show CI</span> shows checks and runs, and commits in the history show their CI status. Cairn stores no GitHub token of its own.</li>
+      </ol>
+    </section>
+
+    <section class="chapter" id="remote">
+      <span class="k">17 · Phone, Telegram &amp; web</span>
+      <h2>Keep an eye on agents when you're away</h2>
+      <ul class="tight">
+        <li><strong>Mobile Companion.</strong> Pair your phone in <span class="ui">Settings → Mobile Companion</span>. You get agent notifications, approvals and diffs on your phone.</li>
+        <li><strong>Telegram.</strong> In <span class="ui">Settings → Telegram</span>, pair a bot to receive agent updates, answer an agent's questions and continue a chat from Telegram.</li>
+        <li><strong>Cairn in a browser.</strong> <span class="ui">Deploy Cairn Server (SSH)…</span> installs the web version on any Docker host you can reach over SSH. The web version has the same Git tools and terminals.</li>
+      </ul>
+    </section>
+
+    <section class="chapter" id="tui">
+      <span class="k">18 · Terminal UI</span>
+      <h2>Cairn without leaving the terminal</h2>
+      <p class="lede">The standalone terminal UI runs on macOS, Linux and Windows. You can detach from a session and reattach later; the session keeps running in between.</p>
+      <ol class="steps">
+        <li>Install with the one-line installer on the <a href="./#terminal">home page</a>. Run the same command again to update.</li>
+        <li>Run <code>cairn</code> in any Git repository. Five numbered panes show the workspace, work surface, commit composer, history and commit detail.</li>
+        <li>Move between panes with <kbd>ctrl+w</kbd> then <kbd>1</kbd>–<kbd>5</kbd>, and within a pane with <kbd>j</kbd>/<kbd>k</kbd>. Press <kbd>?</kbd> to see every key. <kbd>:</kbd> opens the command palette.</li>
+        <li>Press <kbd>Ctrl+]</kbd> to detach. Run <code>cairn</code> again to reconnect.</li>
+      </ol>
+      <figure>
+        <img src="screenshots/tui-workspace.png" alt="Cairn terminal UI showing the numbered workspace panes" loading="lazy" decoding="async" />
+        <figcaption>The terminal UI workspace.</figcaption>
+      </figure>
+    </section>
+
+    <section class="chapter" id="settings">
+      <span class="k">19 · Settings &amp; themes</span>
+      <h2>Make it yours</h2>
+      <figure>
+        <img src="screenshots/settings.jpg" width="1600" height="1175" alt="General settings: theme set to Moss, accent, density, row style, list view, language, code font sizes and terminal options" loading="lazy" decoding="async" />
+        <figcaption>Settings → General with the Moss theme selected.</figcaption>
+      </figure>
+      <ul class="tight">
+        <li><strong>Theme:</strong> Olive, Moss, Warm, Dark, Cream or Classic. <strong>Accent:</strong> Emerald, Indigo, Amber or Cobalt.</li>
+        <li><strong>Density</strong> and <strong>row style</strong> control how compact the lists are. <strong>List view</strong> shows files as a tree or a flat list.</li>
+        <li><strong>Language:</strong> English or Vietnamese.</li>
+        <li><strong>Code</strong> and <strong>Terminal</strong> set font sizes, scrollback, and how much scrollback is restored when you reconnect.</li>
+        <li><strong>Git Workflows</strong> sets defaults for pull, fetch and sync.</li>
+        <li>On macOS, an opt-in setting copies each new screenshot to the clipboard, ready to paste into an agent.</li>
+      </ul>
+    </section>
+
+    <section class="chapter" id="keys">
+      <span class="k">20 · Keyboard shortcuts</span>
+      <h2>The keys worth learning first</h2>
+      <p>Press <kbd>?</kbd> in the app for the full list. On Windows, use <kbd>Ctrl</kbd> instead of <kbd>⌘</kbd>.</p>
+      <table class="keys">
+        <tr><td><kbd>⌘⇧P</kbd></td><td>Command palette</td></tr>
+        <tr><td><kbd>⌘P</kbd> · <kbd>⌘⇧F</kbd> · <kbd>⌘T</kbd></td><td>Search files · text · symbols</td></tr>
+        <tr><td><kbd>⌘⇧L</kbd></td><td>Prompt snippets</td></tr>
+        <tr><td><kbd>⌘⇧1</kbd> · <kbd>⌘⇧2</kbd> · <kbd>⌘⇧3</kbd></td><td>Standard · Log · Working Tree workspace</td></tr>
+        <tr><td><kbd>⌘O</kbd> · <kbd>⌘R</kbd> · <kbd>⌘B</kbd></td><td>Open repository · Refresh · New branch</td></tr>
+        <tr><td><kbd>⌘↩</kbd></td><td>Commit (in the message box)</td></tr>
+        <tr><td><kbd>⌘F</kbd></td><td>Filter history</td></tr>
+        <tr><td><kbd>↑</kbd> / <kbd>↓</kbd></td><td>Move through the graph</td></tr>
+        <tr><td><kbd>⌃`</kbd></td><td>Toggle terminal</td></tr>
+        <tr><td><kbd>⌘⇧U</kbd></td><td>Jump to the agent that needs attention</td></tr>
+        <tr><td><kbd>⌘K</kbd> (in terminal)</td><td>Clear the terminal</td></tr>
+        <tr><td><kbd>⌘⇧S</kbd> (in terminal)</td><td>Save selection as a snippet</td></tr>
+        <tr><td><kbd>Esc</kbd></td><td>Close palette, dialog or menu</td></tr>
+      </table>
+    </section>
+
+    <section class="cta">
+      <h2>Ready to try it?</h2>
+      <p style="color:var(--ink-2)">Free, with no account. Uses your own agents. Notarized on macOS.</p>
+      <a class="pill primary" href="https://github.com/layatai/cairn-app/releases/latest" target="_blank" rel="noopener">⤓ Download Cairn — free</a>
+      <a class="pill ghost" href="./">Back to the overview</a>
+    </section>
+  </main>
+</div>
+
+<footer>
+  <span>© Cairn</span>
+  <span><a href="./">Home</a> · <a href="https://github.com/layatai/cairn-app" target="_blank" rel="noopener">GitHub</a> · <a href="https://github.com/layatai/cairn-app/releases/latest" target="_blank" rel="noopener">Releases &amp; changelog</a></span>
+</footer>
+
+<script>
+  // Highlight the contents entry for the chapter in view.
+  const links = new Map([...document.querySelectorAll('.toc a')].map(a => [a.getAttribute('href').slice(1), a]));
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) if (e.isIntersecting) {
+      links.forEach(a => a.classList.remove('on'));
+      links.get(e.target.id)?.classList.add('on');
+    }
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  document.querySelectorAll('.chapter').forEach(s => io.observe(s));
+</script>
+</body>
+</html>
