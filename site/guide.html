@@ -9,10 +9,18 @@
 <meta property="og:type" content="article" />
 <meta property="og:title" content="Cairn Guide — how to use every feature" />
 <meta property="og:description" content="From your first clone to AI review before the PR — every Cairn workflow, step by step, with screenshots." />
-<meta property="og:image" content="https://layatai.github.io/cairn-app/screenshots/workspace.jpg" />
+<meta property="og:site_name" content="Cairn" />
+<meta property="og:image" content="https://layatai.github.io/cairn-app/og.jpg" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Cairn workbench with the branch list, commit history, and a diff preview" />
 <meta property="og:url" content="https://layatai.github.io/cairn-app/guide.html" />
 <meta name="twitter:card" content="summary_large_image" />
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235fd08a' stroke-width='2.4'%3E%3Ccircle cx='6' cy='6' r='2.4'/%3E%3Ccircle cx='6' cy='18' r='2.4'/%3E%3Ccircle cx='18' cy='12' r='2.4'/%3E%3Cpath d='M6 8.4v7.2M8.4 18H12a4 4 0 0 0 4-4'/%3E%3C/svg%3E" />
+<meta name="twitter:title" content="Cairn Guide — how to use every feature" />
+<meta name="twitter:description" content="From your first clone to AI review before the PR — every Cairn workflow, step by step, with screenshots." />
+<meta name="twitter:image" content="https://layatai.github.io/cairn-app/og.jpg" />
+<meta name="twitter:image:alt" content="Cairn workbench with the branch list, commit history, and a diff preview" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='%235fd08a'%20stroke-width='2.4'%3E%3Ccircle%20cx='6'%20cy='6'%20r='2.4'/%3E%3Ccircle%20cx='6'%20cy='18'%20r='2.4'/%3E%3Ccircle%20cx='18'%20cy='12'%20r='2.4'/%3E%3Cpath%20d='M6%208.4v7.2M8.4%2018H12a4%204%200%200%200%204-4'/%3E%3C/svg%3E" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -173,7 +181,7 @@
       <h2>From download to your first repository</h2>
       <p class="lede">Cairn runs locally and has no account to create. It uses the <code>git</code> already on your machine, so your SSH keys, credential helpers and <code>~/.ssh/config</code> work as they do in your terminal.</p>
       <ol class="steps">
-        <li>Download Cairn for macOS (signed and notarized DMG) or Windows from <a href="https://github.com/layatai/cairn-app/releases/latest" target="_blank" rel="noopener">Releases</a>. On Windows, if SmartScreen warns you, click <span class="ui">More info → Run anyway</span>.</li>
+        <li>Download the desktop app for macOS, Windows, or Linux from <a href="https://github.com/layatai/cairn-app/releases/latest" target="_blank" rel="noopener">Releases</a>. macOS has separate signed and notarized DMGs for Apple Silicon and Intel. Windows has x64 and ARM64 installers; if SmartScreen warns you, click <span class="ui">More info → Run anyway</span>. Linux has x64 and ARM64 AppImage, deb, and rpm packages.</li>
         <li>On first launch you land on the <span class="ui">Welcome</span> tab: <span class="ui">Open Repository</span>, <span class="ui">Clone</span> and <span class="ui">Initialize</span> sit at the top, with your <span class="ui">Setup Progress</span>, <span class="ui">Git Identity</span> and recent repositories below.</li>
         <li>Open <span class="ui">Open Full Setup Wizard</span> (or run <span class="ui">Setup Wizard…</span> from the command palette). It checks Git, the agent CLIs (Claude Code, Codex, Gemini, opencode, aider), <code>gh</code>/<code>glab</code> and your editor, and says how to install anything missing.</li>
         <li>Open a repository with <kbd>⌘O</kbd>, or use the <span class="ui">Repository</span> menu in the toolbar: <span class="ui">Open Repository…</span>, <span class="ui">Clone Repository…</span>, <span class="ui">Initialize Repository…</span>, <span class="ui">Manage Remotes…</span>, <span class="ui">Publish Repository…</span>, <span class="ui">Refresh</span> and a list of recent repositories.</li>
@@ -418,7 +426,7 @@
       <h2>Find anything, then hand it to an agent</h2>
       <p class="lede"><kbd>⌘P</kbd> opens search. The <span class="ui">Files</span>, <span class="ui">Text</span> and <span class="ui">Symbols</span> buttons (or <kbd>Tab</kbd>) switch modes, and a preview opens at the match. The footer offers <span class="ui">Open in Cairn</span>, <span class="ui">Edit in editor</span> and <span class="ui">Add to agent</span>.</p>
       <figure class="mid">
-        <img src="screenshots/search-files.jpg" width="1280" height="520" alt="Search dialog typing "trip" in Files mode with two matching files and a preview area" loading="lazy" decoding="async" />
+        <img src="screenshots/search-files.jpg" width="1280" height="520" alt="Search dialog typing trip in Files mode with two matching files and a preview area" loading="lazy" decoding="async" />
         <figcaption>File search, scoped to the open repository.</figcaption>
       </figure>
       <ul class="tight">
@@ -450,7 +458,7 @@
       <ul class="tight">
         <li><strong>Mobile Companion.</strong> Pair your phone in <span class="ui">Settings → Mobile Companion</span>. You get agent notifications, approvals and diffs on your phone.</li>
         <li><strong>Telegram.</strong> In <span class="ui">Settings → Telegram</span>, pair a bot to receive agent updates, answer an agent's questions and continue a chat from Telegram.</li>
-        <li><strong>Cairn in a browser.</strong> <span class="ui">Deploy Cairn Server (SSH)…</span> in the command palette installs the web version on any Docker host you can reach over SSH. It has the same Git tools and terminals.</li>
+        <li><strong>Cairn in a browser.</strong> <span class="ui">Deploy Cairn Server (SSH)…</span> in the command palette installs the web version on any Docker host you can reach over SSH. It has the same Git tools and terminals. The release also includes <code>cairn-server</code> tarballs for macOS (universal) and Linux (x64 and ARM64), with checksums in <code>cairn-server-checksums.txt</code>.</li>
       </ul>
     </section>
 
