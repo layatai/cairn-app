@@ -8,16 +8,16 @@
 <link rel="canonical" href="https://layatai.github.io/cairn-app/" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Cairn" />
-<meta property="og:title" content="Cairn — the Git client with AI code review built in" />
-<meta property="og:description" content="AI code review built into Git — review your changes with your own agents and fix in one click, before the PR. Native speed, your machine, free." />
+<meta property="og:title" content="Review working changes with your own agents, before you push." />
+<meta property="og:description" content="Cairn is a native Git client with AI code review built in. Claude Code, Codex, and Gemini run on your machine, and you can fix findings in one click. Free, no account." />
 <meta property="og:image" content="https://layatai.github.io/cairn-app/og.jpg" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta property="og:image:alt" content="Cairn workbench with the branch list, commit history, and a diff preview" />
 <meta property="og:url" content="https://layatai.github.io/cairn-app/" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Cairn — the Git client with AI code review built in" />
-<meta name="twitter:description" content="AI code review built into Git — review your changes with your own agents and fix in one click, before the PR. Native speed, your machine, free." />
+<meta name="twitter:title" content="Review working changes with your own agents, before you push." />
+<meta name="twitter:description" content="Cairn is a native Git client with AI code review built in. Claude Code, Codex, and Gemini run on your machine, and you can fix findings in one click. Free, no account." />
 <meta name="twitter:image" content="https://layatai.github.io/cairn-app/og.jpg" />
 <meta name="twitter:image:alt" content="Cairn workbench with the branch list, commit history, and a diff preview" />
 <script type="application/ld+json">
@@ -28,7 +28,7 @@
   "applicationCategory": "DeveloperApplication",
   "operatingSystem": "macOS, Windows, Linux",
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-  "description": "The native Git client with AI code review built in — review your working changes with your own agents and fix them in one click, before you push.",
+  "description": "Review working changes with your own agents, before you push. Cairn is a native Git client. Claude Code, Codex, and Gemini run on your machine, and you can fix findings in one click. Free, no account.",
   "screenshot": "https://layatai.github.io/cairn-app/screenshot.png",
   "downloadUrl": "https://github.com/layatai/cairn-app/releases/latest",
   "url": "https://layatai.github.io/cairn-app/"
@@ -64,6 +64,7 @@
     --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   }
   * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
   html, body { margin: 0; height: 100%; }
   body {
     background: #0c0d0b;
@@ -137,6 +138,12 @@
 
   /* objection microcopy under the download CTA */
   .trust { font-family: var(--font-mono); font-size: 12.5px; color: var(--ink-3); letter-spacing: .3px; }
+  .avail { margin: 0; max-width: 280px; color: var(--ink-2); font-size: 15px; line-height: 1.4; text-align: center; }
+  .win-note { margin: 0; max-width: 36em; color: var(--ink-2); font-size: 14px; line-height: 1.45; text-align: center; }
+  #features .win-note { text-align: left; }
+  .path { list-style: none; margin: 0 0 28px; padding: 0; counter-reset: path; max-width: 720px; }
+  .path li { counter-increment: path; position: relative; padding: 0 0 12px 36px; color: var(--ink-2); font-size: 15px; line-height: 1.5; }
+  .path li::before { content: counter(path); position: absolute; left: 0; top: 1px; width: 24px; height: 24px; border-radius: 50%; background: var(--accent-bg); color: var(--accent-ink); font: 600 12px/24px var(--font-mono); text-align: center; }
 
   .cta-row { display: flex; gap: 14px; margin-top: 8px; }
   .pill { display: inline-flex; align-items: center; justify-content: center; gap: 9px; min-height: 44px; padding: 13px 22px; border-radius: 12px; font-weight: 600; font-size: 17px; }
@@ -424,6 +431,7 @@
   .faq h3 { font-size: 17px; margin: 24px 0 7px; letter-spacing: -.2px; }
   .faq p { margin: 0; color: var(--ink-2); font-size: 15px; line-height: 1.6; }
   .page-cta { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin: 0 0 10px; }
+  .page-cta .avail { flex: 1 0 100%; max-width: none; text-align: left; }
   .page-content .trust { margin-bottom: 64px; }
   .install-section { margin: 0 0 64px; scroll-margin-top: 92px; }
   .install-lead { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(250px, .85fr); gap: 28px; align-items: start; margin-bottom: 18px; }
@@ -476,7 +484,8 @@
     <a class="nav-link" href="#terminal">Terminal UI</a>
     <a class="nav-link" href="https://github.com/layatai/cairn-app" target="_blank" rel="noopener">GitHub</a>
   </div>
-  <a class="nav-dl" id="navDl" data-dl="auto" href="https://github.com/layatai/cairn-app/releases/latest" target="_blank" rel="noopener">↓ Download</a>
+  <a class="nav-dl dl-only" id="navDl" data-dl="auto" href="https://github.com/layatai/cairn-app/releases/latest" target="_blank" rel="noopener">↓ Download</a>
+  <a class="nav-dl phone-only" hidden href="https://github.com/layatai/cairn-app" target="_blank" rel="noopener">Star on GitHub</a>
 </nav>
 <div class="stage" id="stage">
 
@@ -656,28 +665,34 @@
   <div class="overlay" id="intro">
     <div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#0c1f14" stroke-width="2.4"><circle cx="6" cy="6" r="2.4"/><circle cx="6" cy="18" r="2.4"/><circle cx="18" cy="12" r="2.4"/><path d="M6 8.4v7.2M8.4 18H12a4 4 0 0 0 4-4"/></svg></div>
     <h1 class="wordmark">Cairn</h1>
-    <p class="tagline"><span class="hl">AI code review, built into Git.</span> Review your working changes with the agents you already run — and fix them in one click, before you push. Native speed, your machine.</p>
+    <p class="tagline"><span class="hl">Review working changes with your own agents, before you push.</span> Cairn is a native Git client with AI code review built in. Claude Code, Codex, and Gemini run on your machine, and you can fix findings in one click. Free, no account.</p>
     <div class="kicker">Desktop and terminal UI on macOS, Windows, and Linux</div>
     <div class="cta-row">
-      <a class="pill primary" data-dl="auto" data-dl-label href="https://github.com/layatai/cairn-app/releases/latest" target="_blank" rel="noopener">⤓ Download — free</a>
+      <a class="pill primary dl-only" data-dl="auto" data-dl-label href="https://github.com/layatai/cairn-app/releases/latest" target="_blank" rel="noopener">⤓ Download — free</a>
+      <p class="avail phone-only" hidden>Available for macOS, Windows, Linux</p>
+      <a class="pill ghost phone-only" hidden href="https://github.com/layatai/cairn-app" target="_blank" rel="noopener">Star on GitHub</a>
       <a class="pill ghost" id="tourBtn" href="#stage">Take the 60-second tour ↓</a>
     </div>
-    <div class="trust">Your own AI agents · No account · No telemetry · Notarized on macOS · Free</div>
+    <div class="trust">Your own AI agents · No account · Notarized on macOS · Free</div>
+    <p class="win-note" hidden>Windows may warn on first open. Choose More info, then Run anyway. The installer isn't code-signed.</p>
   </div>
 
   <!-- outro / CTA -->
   <div class="overlay hide" id="outro">
     <div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#0c1f14" stroke-width="2.4"><circle cx="6" cy="6" r="2.4"/><circle cx="6" cy="18" r="2.4"/><circle cx="18" cy="12" r="2.4"/><path d="M6 8.4v7.2M8.4 18H12a4 4 0 0 0 4-4"/></svg></div>
     <div class="wordmark">Cairn</div>
-    <p class="tagline"><span class="hl">Stage, review, and run</span> — without leaving your Git client.</p>
+    <p class="tagline"><span class="hl">Review working changes before you push,</span> in the same client you commit from.</p>
     <img class="outro-shot" src="screenshot-outro.jpg" width="1600" height="1045" loading="lazy" decoding="async"
          alt="Cairn — commit graph, commit details, inline diff, and an AI agent session in the built-in terminal" />
     <div class="shot-cap">The actual app — not a mockup.</div>
     <div class="cta-row">
-      <a class="pill primary" id="ctaDl" data-dl="auto" data-dl-label href="https://github.com/layatai/cairn-app/releases/latest" target="_blank" rel="noopener">⤓ Download — free</a>
+      <a class="pill primary dl-only" id="ctaDl" data-dl="auto" data-dl-label href="https://github.com/layatai/cairn-app/releases/latest" target="_blank" rel="noopener">⤓ Download — free</a>
+      <p class="avail phone-only" hidden>Available for macOS, Windows, Linux</p>
+      <a class="pill ghost phone-only" hidden href="https://github.com/layatai/cairn-app" target="_blank" rel="noopener">Star on GitHub</a>
       <a class="pill ghost" href="#terminal">Install the terminal UI</a>
     </div>
-    <div class="trust">Your own AI agents · No account · No telemetry · Notarized on macOS · Free</div>
+    <div class="trust">Your own AI agents · No account · Notarized on macOS · Free</div>
+    <p class="win-note" hidden>Windows may warn on first open. Choose More info, then Run anyway. The installer isn't code-signed.</p>
     <a class="url" href="https://github.com/layatai/cairn-app/releases/latest" target="_blank" rel="noopener" style="text-decoration:none">Open releases &amp; changelog on GitHub →</a>
   </div>
 
@@ -688,14 +703,19 @@
 <!-- indexable content: the story's copy in normal document flow -->
 <section class="page-content" id="features">
   <div class="inner">
-    <h2>Everything in one native client</h2>
+    <h2>Review, then the rest of Git, in one native client.</h2>
+    <ol class="path">
+      <li>Download the desktop app, or paste the terminal installer.</li>
+      <li>Open a repository. The setup wizard checks Git and any agent CLIs you already have.</li>
+      <li>Review working changes and fix findings in one click, before you push.</li>
+    </ol>
     <div class="feat-grid">
+      <article class="feat"><span class="k">AI code review</span><h3>Review before the PR</h3><p>Review your working changes with Claude · Codex · Gemini — structured findings you fix in one click, in an agent-chat panel. Your own installed CLIs do the work.</p></article>
       <article class="feat"><span class="k">The client</span><h3>A full Git workhorse</h3><p>Graph, branches, stash, interactive rebase, blame, history, conflicts, worktrees, bisect — fast and native, built with Rust and libgit2.</p></article>
       <article class="feat"><span class="k">Diffs</span><h3>Unified, split or whole-file</h3><p>Syntax-highlighted diffs that stay smooth even on huge files — switch layout right from the header.</p></article>
       <article class="feat"><span class="k">Staging</span><h3>Stage by the line</h3><p>Select exactly the lines you mean — not just whole hunks — and stage them in one click, in any diff layout.</p></article>
       <article class="feat"><span class="k">Blame</span><h3>Who &amp; why, inline</h3><p>GitLens-style blame on the hovered line — author, when, and the commit that introduced it.</p></article>
       <article class="feat"><span class="k">Review</span><h3>Every file, one scroll</h3><p>Continuous review of the whole changeset — like a pull request, right on your desktop.</p></article>
-      <article class="feat"><span class="k">AI code review</span><h3>Review before the PR</h3><p>Review your working changes with Claude · Codex · Gemini — structured findings you fix in one click, in an agent-chat panel. Your own installed CLIs do the work.</p></article>
       <article class="feat"><span class="k">Search</span><h3>Find anything, across every repo</h3><p>One palette (⌘P) fuzzy-finds file names, full-text matches (ripgrep-fast) and symbol definitions across all your recent projects — or a chosen subset. A live, syntax-highlighted preview jumps straight to the matched line.</p></article>
       <article class="feat"><span class="k">Run configs</span><h3>Run, from the toolbar</h3><p>launch.json, tasks.json &amp; package.json scripts — launched straight from the toolbar.</p></article>
       <article class="feat"><span class="k">Integrated terminal</span><h3>Watch it run</h3><p>Commands and AI agent sessions run in built-in terminal tabs — background tabs ring when an agent needs you. Drag or paste a file — even an image — straight into Claude or any agent.</p></article>
@@ -733,24 +753,29 @@
       <h3>Which platforms does it run on?</h3>
       <p>The desktop app runs on macOS, Windows, and Linux, on x64 and ARM64. macOS downloads are separate signed and notarized DMGs for Apple Silicon and Intel, plus matching .app archives. Windows downloads are NSIS and MSI installers. Linux downloads are AppImage, deb, and rpm. The terminal UI ships for macOS (universal), Linux (x64 and ARM64), and Windows (x64 and ARM64). The same release includes Cairn Server tarballs for a self-hosted web UI: macOS universal, Linux x64, and Linux ARM64, with checksums.</p>
       <h3>Will Windows warn me on first launch?</h3>
-      <p>The Windows installers (x64 and ARM64) aren't code-signed, so SmartScreen may flag them. Click <strong>More info → Run anyway</strong> to continue. The macOS DMGs are signed and notarized by Apple.</p>
+      <p>Windows may warn on first open. Choose <strong>More info</strong>, then <strong>Run anyway</strong>. The installer isn't code-signed. The macOS DMGs are signed and notarized by Apple.</p>
       <h3>Does my code leave my machine?</h3>
       <p>The desktop app and the terminal UI run on your machine. There is no Cairn account and no Cairn-run service. Git operations stay local. AI features call the agent CLIs you install, and those CLIs talk to the provider you choose. Optional pieces — a self-hosted Cairn Server, Telegram, and connected credential vaults — use the hosts you configure.</p>
       <h3>How is it different from other Git clients?</h3>
       <p>Two things no other Git client pairs: <strong>AI review built into the Git workflow</strong> — review your working changes and fix them in one click, before they're ever a pull request — and <strong>native speed</strong> (Tauri + Rust, not Electron). It drives the agent CLIs you already run, so there's no extra subscription. All alongside the full Git toolset: graph, interactive rebase, worktrees, bisect, and a conflict solver.</p>
     </div>
 
+    <h2>Review your working changes before you push.</h2>
     <div class="page-cta">
-      <a class="pill primary" data-dl="auto" data-dl-label href="https://github.com/layatai/cairn-app/releases/latest" target="_blank" rel="noopener">⤓ Download — free</a>
-      <a class="pill ghost" href="guide.html">Read the feature guide</a>
+      <a class="pill primary dl-only" data-dl="auto" data-dl-label href="https://github.com/layatai/cairn-app/releases/latest" target="_blank" rel="noopener">⤓ Download — free</a>
+      <p class="avail phone-only" hidden>Available for macOS, Windows, Linux</p>
+      <a class="pill ghost phone-only" hidden href="https://github.com/layatai/cairn-app" target="_blank" rel="noopener">Star on GitHub</a>
+      <a class="pill ghost" href="#terminal">Install the terminal UI</a>
     </div>
-    <div class="trust">Your own AI agents · No account · No telemetry · Notarized on macOS · Free</div>
+    <div class="trust">Your own AI agents · No account · Notarized on macOS · Free</div>
+    <p class="win-note" hidden>Windows may warn on first open. Choose More info, then Run anyway. The installer isn't code-signed.</p>
 
     <footer class="page-foot">
       <span>© Cairn</span>
       <span>
         <a href="guide.html">Guide</a> ·
         <a href="https://github.com/layatai/cairn-app" target="_blank" rel="noopener">GitHub</a> ·
+        <a href="https://github.com/layatai/cairn-app" target="_blank" rel="noopener">Star on GitHub</a> ·
         <a href="https://github.com/layatai/cairn-app/releases/latest" target="_blank" rel="noopener">Releases &amp; changelog</a>
       </span>
     </footer>
@@ -914,12 +939,20 @@
     || ((/Mac/.test(ua) || /Mac/.test(platform)) && navigator.maxTouchPoints > 1);
   const isMac = !isIOS && (/Mac/.test(ua) || /Mac/.test(platform));
   const isWin = /Win/.test(ua) || /Win/.test(platform);
-  const isLinux = !isIOS && /Linux/.test(ua) && !/Android/.test(ua) && !isMac;
+  const isAndroid = /Android/i.test(ua);
+  const isPhone = isIOS || isAndroid;
+  const isLinux = !isIOS && /Linux/.test(ua) && !isAndroid && !isMac;
   const setDlLabels = (label) =>
     document.querySelectorAll('[data-dl-label]').forEach((a) => { a.textContent = '⤓ ' + label; });
-  if (isMac) setDlLabels('Download for macOS — free');
+  if (isPhone) {
+    document.querySelectorAll('.phone-only').forEach((el) => el.removeAttribute('hidden'));
+    document.querySelectorAll('.dl-only').forEach((el) => el.setAttribute('hidden', ''));
+  } else if (isMac) setDlLabels('Download for macOS — free');
   else if (isWin) setDlLabels('Download for Windows — free');
   else if (isLinux) setDlLabels('Download for Linux — free');
+  if (isWin && !isPhone) {
+    document.querySelectorAll('.win-note').forEach((el) => el.removeAttribute('hidden'));
+  }
 
   function archFrom(value) {
     const name = String(value || '').toLowerCase();
@@ -947,7 +980,7 @@
     return hit ? hit.browser_download_url : null;
   }
 
-  Promise.all([
+  if (!isPhone) Promise.all([
     detectArch(),
     fetch(RELEASES_API)
       .then((r) => (r.ok ? r.json() : null))

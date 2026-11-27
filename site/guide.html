@@ -46,6 +46,7 @@
     --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   }
   * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
   html { scroll-behavior: smooth; scroll-padding-top: 80px; }
   @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
   body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.6 var(--font-ui); -webkit-font-smoothing: antialiased; }
@@ -113,6 +114,18 @@
   .pill { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 11px 20px; border-radius: 10px; font-weight: 600; text-decoration: none; margin: 6px; }
   .pill.primary { background: var(--accent); color: var(--accent-contrast); }
   .pill.ghost { border: 1px solid var(--border-strong); color: var(--ink); }
+  .trust { margin: 0 0 8px; color: var(--ink-2); font-size: 14px; }
+  .win-note { margin: 0 auto 12px; max-width: 36em; color: var(--ink-2); font-size: 14px; line-height: 1.45; }
+  .avail { margin: 8px 0; color: var(--ink-2); }
+  .install-grid { display: grid; gap: 12px; margin: 16px 0; }
+  .install-card { min-width: 0; border: 1px solid var(--border); border-radius: 12px; padding: 14px; background: var(--surface); }
+  .install-platform { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+  .install-platform span { font-family: var(--font-mono); color: var(--ink-3); font-size: 12px; letter-spacing: .4px; }
+  .command-row { display: flex; flex-direction: column; align-items: stretch; gap: 8px; min-width: 0; }
+  .command-row code { display: block; font-size: 12.5px; line-height: 1.45; white-space: pre-wrap; overflow-wrap: anywhere; background: transparent; padding: 0; }
+  .copy-command { align-self: flex-end; min-width: 44px; min-height: 44px; border: 1px solid var(--border-strong); background: var(--surface-2); color: var(--ink); border-radius: 8px; padding: 0 14px; font: 600 13px var(--font-ui); cursor: pointer; }
+  .install-note { margin: 0; color: var(--ink-3); font-size: 14px; }
+  @media (min-width: 800px) { .install-grid { grid-template-columns: 1fr 1fr; } }
   footer { max-width: 1160px; margin: 0 auto; padding: 0 24px 40px; color: var(--ink-3); font-size: 13px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
   footer a { display: inline-flex; align-items: center; min-height: 44px; color: var(--ink-2); }
 
@@ -140,7 +153,8 @@
   <div class="nav-actions">
     <a class="nav-link hide-sm" href="./">Home</a>
     <a class="nav-link hide-sm" href="https://github.com/layatai/cairn-app" target="_blank" rel="noopener">GitHub</a>
-    <a class="nav-dl" href="https://github.com/layatai/cairn-app/releases/latest" target="_blank" rel="noopener">↓ Download</a>
+    <a class="nav-dl dl-only" data-dl="auto" href="https://github.com/layatai/cairn-app/releases/latest" target="_blank" rel="noopener">↓ Download</a>
+    <a class="nav-dl phone-only" hidden href="https://github.com/layatai/cairn-app" target="_blank" rel="noopener">Star on GitHub</a>
   </div>
 </nav>
 
@@ -469,11 +483,28 @@
       <h2>Cairn without leaving the terminal</h2>
       <p class="lede">The standalone terminal UI runs on macOS, Linux and Windows. You can detach from a session and reattach later; the session keeps running in between.</p>
       <ol class="steps">
-        <li>Install with the one-line installer on the <a href="./#terminal">home page</a>. Run the same command again to update.</li>
+        <li>Install with one of the commands below. Run the same command again to update.</li>
         <li>Run <code>cairn</code> in any Git repository. Five numbered panes show the workspace, work surface, commit composer, history and commit detail.</li>
         <li>Move between panes with <kbd>ctrl+w</kbd> then <kbd>1</kbd>–<kbd>5</kbd>, and within a pane with <kbd>j</kbd>/<kbd>k</kbd>. Press <kbd>?</kbd> to see every key. <kbd>:</kbd> opens the command palette.</li>
         <li>Press <kbd>Ctrl+]</kbd> to detach. Run <code>cairn</code> again to reconnect.</li>
       </ol>
+      <div class="install-grid">
+        <article class="install-card">
+          <div class="install-platform"><strong>macOS, Linux or WSL2</strong><span>x64 · ARM64</span></div>
+          <div class="command-row">
+            <code>curl -fsSL --proto '=https' --tlsv1.2 https://layatai.github.io/cairn-app/install.sh | bash</code>
+            <button class="copy-command" type="button" data-copy aria-label="Copy macOS and Linux install command">Copy</button>
+          </div>
+        </article>
+        <article class="install-card">
+          <div class="install-platform"><strong>Windows PowerShell</strong><span>x64 · ARM64</span></div>
+          <div class="command-row">
+            <code>iwr -useb https://layatai.github.io/cairn-app/install.ps1 | iex</code>
+            <button class="copy-command" type="button" data-copy aria-label="Copy Windows install command">Copy</button>
+          </div>
+        </article>
+      </div>
+      <p class="install-note">Run <strong>cairn</strong> in any Git repository. Press <strong>Ctrl+]</strong> to detach; run <strong>cairn</strong> again to reconnect.</p>
       <figure>
         <img src="screenshots/tui-workspace.png" width="1624" height="1061" alt="Cairn terminal UI showing the numbered workspace panes" loading="lazy" decoding="async" />
         <figcaption>The terminal UI workspace.</figcaption>
@@ -520,9 +551,12 @@
     </section>
 
     <section class="cta">
-      <h2>Ready to try it?</h2>
-      <p style="color:var(--ink-2)">Free, with no account. Uses your own agents. Notarized on macOS.</p>
-      <a class="pill primary" href="https://github.com/layatai/cairn-app/releases/latest" target="_blank" rel="noopener">⤓ Download Cairn — free</a>
+      <h2>Review your working changes before you push.</h2>
+      <p class="trust">Your own AI agents · No account · Notarized on macOS · Free</p>
+      <p class="win-note" hidden>Windows may warn on first open. Choose More info, then Run anyway. The installer isn't code-signed.</p>
+      <a class="pill primary dl-only" data-dl="auto" data-dl-label href="https://github.com/layatai/cairn-app/releases/latest" target="_blank" rel="noopener">⤓ Download — free</a>
+      <p class="avail phone-only" hidden>Available for macOS, Windows, Linux</p>
+      <a class="pill ghost phone-only" hidden href="https://github.com/layatai/cairn-app" target="_blank" rel="noopener">Star on GitHub</a>
       <a class="pill ghost" href="./">Back to the overview</a>
     </section>
   </main>
@@ -530,7 +564,7 @@
 
 <footer>
   <span>© Cairn</span>
-  <span><a href="./">Home</a> · <a href="https://github.com/layatai/cairn-app" target="_blank" rel="noopener">GitHub</a> · <a href="https://github.com/layatai/cairn-app/releases/latest" target="_blank" rel="noopener">Releases &amp; changelog</a></span>
+  <span><a href="./">Home</a> · <a href="https://github.com/layatai/cairn-app" target="_blank" rel="noopener">GitHub</a> · <a href="https://github.com/layatai/cairn-app" target="_blank" rel="noopener">Star on GitHub</a> · <a href="https://github.com/layatai/cairn-app/releases/latest" target="_blank" rel="noopener">Releases &amp; changelog</a></span>
 </footer>
 
 <script>
@@ -543,6 +577,83 @@
     }
   }, { rootMargin: '-30% 0px -60% 0px' });
   document.querySelectorAll('.chapter').forEach(s => io.observe(s));
+
+  document.querySelectorAll('[data-copy]').forEach((button) => {
+    button.addEventListener('click', async () => {
+      const command = button.parentElement?.querySelector('code')?.textContent?.trim();
+      if (!command) return;
+      try {
+        await navigator.clipboard.writeText(command);
+        button.textContent = 'Copied';
+        button.classList.add('copied');
+        setTimeout(() => { button.textContent = 'Copy'; button.classList.remove('copied'); }, 1600);
+      } catch {
+        window.prompt('Copy this command:', command);
+      }
+    });
+  });
+
+  const RELEASES_API = 'https://api.github.com/repos/layatai/cairn-app/releases/latest';
+  const ua = navigator.userAgent || '';
+  const platform = navigator.platform || '';
+  const isIOS = /iPhone|iPad|iPod/i.test(ua)
+    || ((/Mac/.test(ua) || /Mac/.test(platform)) && navigator.maxTouchPoints > 1);
+  const isAndroid = /Android/i.test(ua);
+  const isPhone = isIOS || isAndroid;
+  const isMac = !isIOS && (/Mac/.test(ua) || /Mac/.test(platform));
+  const isWin = /Win/.test(ua) || /Win/.test(platform);
+  const isLinux = !isIOS && /Linux/.test(ua) && !isAndroid && !isMac;
+  const setDlLabels = (label) =>
+    document.querySelectorAll('[data-dl-label]').forEach((a) => { a.textContent = '⤓ ' + label; });
+  if (isPhone) {
+    document.querySelectorAll('.phone-only').forEach((el) => el.removeAttribute('hidden'));
+    document.querySelectorAll('.dl-only').forEach((el) => el.setAttribute('hidden', ''));
+  } else if (isMac) setDlLabels('Download for macOS — free');
+  else if (isWin) setDlLabels('Download for Windows — free');
+  else if (isLinux) setDlLabels('Download for Linux — free');
+  if (isWin && !isPhone) {
+    document.querySelectorAll('.win-note').forEach((el) => el.removeAttribute('hidden'));
+  }
+  function archFrom(value) {
+    const name = String(value || '').toLowerCase();
+    if (name === 'arm' || name === 'arm64' || name === 'aarch64') return 'arm';
+    if (name === 'x86' || name === 'x86_64' || name === 'amd64') return 'x64';
+    return null;
+  }
+  function archFromUa() {
+    if (/aarch64|arm64/i.test(ua)) return 'arm';
+    if (/x86_64|win64|wow64|amd64/i.test(ua)) return 'x64';
+    return null;
+  }
+  async function detectArch() {
+    try {
+      if (navigator.userAgentData && navigator.userAgentData.getHighEntropyValues) {
+        const hints = await navigator.userAgentData.getHighEntropyValues(['architecture']);
+        const arch = archFrom(hints.architecture);
+        if (arch) return arch;
+      }
+    } catch (e) {}
+    return archFromUa();
+  }
+  function pickAsset(assets, pattern) {
+    const hit = assets.find((asset) => pattern.test(asset.name));
+    return hit ? hit.browser_download_url : null;
+  }
+  if (!isPhone) Promise.all([
+    detectArch(),
+    fetch(RELEASES_API).then((r) => (r.ok ? r.json() : null)).catch(() => null),
+  ]).then(([arch, rel]) => {
+    if (!rel || !rel.assets) return;
+    let url = null;
+    if (isMac && arch === 'arm') url = pickAsset(rel.assets, /_aarch64\.dmg$/i);
+    else if (isMac && arch === 'x64') url = pickAsset(rel.assets, /_x64\.dmg$/i);
+    else if (isWin && arch === 'arm') url = pickAsset(rel.assets, /_arm64-setup\.exe$/i);
+    else if (isWin && arch === 'x64') url = pickAsset(rel.assets, /_x64-setup\.exe$/i);
+    else if (isLinux && arch === 'arm') url = pickAsset(rel.assets, /_aarch64\.AppImage$/i);
+    else if (isLinux && arch === 'x64') url = pickAsset(rel.assets, /_amd64\.AppImage$/i);
+    if (!url) return;
+    document.querySelectorAll('[data-dl="auto"]').forEach((a) => { a.href = url; });
+  }).catch(() => {});
 </script>
 </body>
 </html>
