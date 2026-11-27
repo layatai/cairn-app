@@ -23,7 +23,9 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='%235fd08a'%20stroke-width='2.4'%3E%3Ccircle%20cx='6'%20cy='6'%20r='2.4'/%3E%3Ccircle%20cx='6'%20cy='18'%20r='2.4'/%3E%3Ccircle%20cx='18'%20cy='12'%20r='2.4'/%3E%3Cpath%20d='M6%208.4v7.2M8.4%2018H12a4%204%200%200%200%204-4'/%3E%3C/svg%3E" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" media="print" onload="this.media='all'" />
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" /></noscript>
 <style>
   /* Moss — the same tokens as the app's Moss theme (src/themeMinimal.css). */
   :root {
@@ -55,13 +57,13 @@
 
   .site-nav { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 24px; background: color-mix(in oklch, var(--bg) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); }
   .site-nav a { text-decoration: none; }
-  .brand { display: inline-flex; align-items: center; gap: 9px; color: var(--ink); font-weight: 700; font-size: 16px; }
+  .brand { display: inline-flex; align-items: center; gap: 9px; min-height: 44px; color: var(--ink); font-weight: 700; font-size: 16px; }
   .brand .mk { width: 26px; height: 26px; border-radius: 7px; background: var(--accent); display: grid; place-items: center; }
   .brand .mk svg { width: 16px; height: 16px; }
   .nav-actions { display: flex; align-items: center; gap: 18px; }
-  .nav-link { color: var(--ink-2); font-size: 14px; font-weight: 500; }
+  .nav-link { display: inline-flex; align-items: center; min-height: 44px; color: var(--ink-2); font-size: 14px; font-weight: 500; }
   .nav-link:hover { color: var(--ink); }
-  .nav-dl { background: var(--accent); color: var(--accent-contrast); font-weight: 600; font-size: 14px; padding: 8px 15px; border-radius: 9px; }
+  .nav-dl { display: inline-flex; align-items: center; min-height: 44px; background: var(--accent); color: var(--accent-contrast); font-weight: 600; font-size: 14px; padding: 0 15px; border-radius: 9px; }
 
   .hero { max-width: 1160px; margin: 0 auto; padding: 64px 24px 28px; }
   .eyebrow { font-family: var(--font-mono); font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); }
@@ -108,17 +110,17 @@
 
   .cta { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 28px; text-align: center; }
   .cta h2 { margin-top: 0; }
-  .pill { display: inline-block; padding: 11px 20px; border-radius: 10px; font-weight: 600; text-decoration: none; margin: 6px; }
+  .pill { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 11px 20px; border-radius: 10px; font-weight: 600; text-decoration: none; margin: 6px; }
   .pill.primary { background: var(--accent); color: var(--accent-contrast); }
   .pill.ghost { border: 1px solid var(--border-strong); color: var(--ink); }
   footer { max-width: 1160px; margin: 0 auto; padding: 0 24px 40px; color: var(--ink-3); font-size: 13px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-  footer a { color: var(--ink-2); }
+  footer a { display: inline-flex; align-items: center; min-height: 44px; color: var(--ink-2); }
 
   @media (max-width: 860px) {
     .layout { grid-template-columns: 1fr; gap: 8px; padding: 8px 16px 64px; }
     .hero { padding: 40px 16px 16px; }
-    .site-nav { padding: 12px 16px; }
-    .nav-link.hide-sm { display: none; }
+    .site-nav { flex-wrap: wrap; row-gap: 2px; padding: 8px 16px; }
+    .nav-actions { flex: 1 1 160px; min-width: 0; flex-wrap: wrap; justify-content: flex-end; gap: 0 12px; }
     .toc { position: static; max-height: none; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px; }
     .toc ol { columns: 2; column-gap: 12px; }
     .toc a { border-left: 0; padding: 4px 0; }
@@ -473,7 +475,7 @@
         <li>Press <kbd>Ctrl+]</kbd> to detach. Run <code>cairn</code> again to reconnect.</li>
       </ol>
       <figure>
-        <img src="screenshots/tui-workspace.png" alt="Cairn terminal UI showing the numbered workspace panes" loading="lazy" decoding="async" />
+        <img src="screenshots/tui-workspace.png" width="1624" height="1061" alt="Cairn terminal UI showing the numbered workspace panes" loading="lazy" decoding="async" />
         <figcaption>The terminal UI workspace.</figcaption>
       </figure>
     </section>
